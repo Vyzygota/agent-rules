@@ -2,7 +2,9 @@
 
 Global agent development principles for all projects by Piotr Maziarz (vyzygota).
 
-Inspired by Warp's agentic development model ([warpdotdev/warp](https://github.com/warpdotdev/warp), [warpdotdev/common-skills](https://github.com/warpdotdev/common-skills)).
+Inspired by Warp's agentic development model.
+
+> **Origin:** The spec-driven workflow, SKILL.md format, and skills-lock.json convention are adapted from [warpdotdev/warp](https://github.com/warpdotdev/warp) and [warpdotdev/common-skills](https://github.com/warpdotdev/common-skills). WARPEngine extends these patterns to support multiple agent environments (Claude Code, Google Antigravity) and domain-specific tooling (Unity via mcp-unity).
 
 ---
 
