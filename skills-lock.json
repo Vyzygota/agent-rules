@@ -45,6 +45,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/warp-watch/SKILL.md"
+    },
+    "unity-implement": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/unity-implement/SKILL.md"
     }
   }
 }
