@@ -47,6 +47,7 @@ Agent role: execute mechanical work, keep specs current, flag ambiguity.
 | [`spec-driven-implementation`](.agents/skills/spec-driven-implementation/SKILL.md) | Implement a feature from approved specs |
 | [`implement-specs`](.agents/skills/implement-specs/SKILL.md) | Language-agnostic spec implementation workflow |
 | [`unity-implement`](.agents/skills/unity-implement/SKILL.md) | Implement Unity features using mcp-unity MCP tools |
+| [`unity-camera-sensor`](.agents/skills/unity-camera-sensor/SKILL.md) | Give the agent eyes — visual observation of the Unity scene via CameraSensorComponent |
 | [`diagnose-ci-failures`](.agents/skills/diagnose-ci-failures/SKILL.md) | Investigate and fix failing CI checks |
 | [`update-skill`](.agents/skills/update-skill/SKILL.md) | Create or update a SKILL.md file |
 | [`warp-watch`](.agents/skills/warp-watch/SKILL.md) | Sync with upstream Warp patterns; detect drift |
@@ -118,6 +119,31 @@ Unity projects use the additional `unity-implement` skill, which orchestrates [C
 3. Tests via `run_tests`, mapped to PRODUCT.md invariants by number
 
 Requires: Unity Editor open + mcp-unity server running (**Tools > MCP Unity > Server Window** → green).
+
+---
+
+### The Agent Has Eyes — `unity-camera-sensor`
+
+> **Stop describing. Start showing.**
+
+Logs catch bugs that happen in code. But some bugs only exist in pixels — a misaligned prefab, a broken material, a camera framing that makes no sense, a UI element half off-screen. These errors are invisible to every tool that reads text. They require vision.
+
+**`CameraSensorComponent` is the visual bridge between Unity and the agent.** It is not a training utility — it is a real-time observation channel. The agent sees what the camera sees, exactly as the player would.
+
+This changes everything about how AI-assisted Unity development works:
+
+| Without camera sensor | With camera sensor |
+|---|---|
+| Human takes a screenshot | Agent sees the scene directly |
+| Human describes "the object is slightly off-center" | Agent detects the offset by observation |
+| Graphical bugs survive code review | Visual errors caught in the same pass as logic errors |
+| Human is the bottleneck for visual feedback | Agent closes the visual feedback loop autonomously |
+
+Logs remain essential — they catch what the eye cannot (null refs, wrong values, timing errors). But logs alone leave an entire category of bugs invisible. **The camera sensor closes that gap.**
+
+Set up once per project. Position a camera to frame what matters. From that point on, the agent does not need to be told what the scene looks like — it can look.
+
+See [`unity-camera-sensor`](.agents/skills/unity-camera-sensor/SKILL.md) for full setup, API reference, and camera positioning strategies.
 
 ---
 
