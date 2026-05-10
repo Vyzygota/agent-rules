@@ -24,12 +24,12 @@ Agent role: execute mechanical work, keep specs current, flag ambiguity.
 
 WARPEngine skills are compatible with two AI agent environments simultaneously:
 
-| Environment | Skills path | MCP config |
-|---|---|---|
-| Claude Code | `.agents/skills/<name>/SKILL.md` | `.claude/settings.json` |
-| Antigravity IDE (Google) | `.agentskills/<name>/SKILL.md` | `antigravity://settings` → MCP Servers |
+| Environment | Skills | Rules / Workflows | Global context |
+|---|---|---|---|
+| Claude Code | `.agents/skills/<name>/SKILL.md` | — | `CLAUDE.md` / `~/.claude/CLAUDE.md` |
+| Antigravity IDE | `.agentskills/<name>/SKILL.md` (junction) | `.agents/rules/*.md` → `/name` slash cmds | `~/.gemini/GEMINI.md` |
 
-`.agentskills/` is a junction/symlink → `.agents/skills/`. Skills live once, both environments discover them. Same YAML frontmatter format, same MCP server JSON format.
+`.agentskills/` is a junction/symlink → `.agents/skills/`. Skills live once, both environments discover them. Same YAML frontmatter format, same MCP server JSON format (`mcpServers`).
 
 ---
 
@@ -40,6 +40,7 @@ When starting work on any project, verify these exist:
 - [ ] `AGENTS.md` or `CLAUDE.md` at repo root — project context, build commands, architecture rules
 - [ ] `specs/<id>/` — specs for any non-trivial feature in progress
 - [ ] `.agents/skills/` — primary skills directory (Claude Code / WARPEngine)
+- [ ] `.agents/rules/` — WORKSPACE.md for Antigravity session context; companion Workflow files
 - [ ] `.agentskills/` — junction/symlink to `.agents/skills/` (Antigravity IDE)
 - [ ] `skills-lock.json` — references to shared skills from vyzygota/agent-rules
 - [ ] `.claude/settings.json` — MCP server config (Claude Code)

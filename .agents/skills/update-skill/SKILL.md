@@ -41,9 +41,9 @@ Every SKILL.md must start with YAML frontmatter:
 - **name**: kebab-case (lowercase letters, numbers, hyphens only)
 - **description**: specific, non-empty. Start with an action verb. Include both *what* and *when*. Write in third person.
 
-Good description: `"Write a PRODUCT.md spec for a significant user-facing feature. Use when the user asks for a PRD or wants to define behavior before implementation."`
+Good: `"Write a PRODUCT.md spec for a significant user-facing feature. Use when the user asks for a PRD or wants to define behavior before implementation."`
 
-Bad description: `"Helps with specs"` — too vague, no trigger.
+Bad: `"Helps with specs"` — too vague, no trigger.
 
 ### Structure
 
@@ -67,6 +67,33 @@ Keep structure flexible — simple skills can omit optional sections.
 1. Add an entry to `skills-lock.json`
 2. Reference the skill in `init-project/SKILL.md` if it should be part of every project setup
 3. Update `AGENTS.md` / `CLAUDE.md` if the skill introduces a new convention
+4. (Optional) Expose as Antigravity Workflow — see below
+
+## Expose as Antigravity Workflow
+
+A skill auto-discovered from context is a **Skill**. The same skill explicitly invoked via `/name` in Antigravity chat is a **Workflow**. Both can coexist without duplicating content.
+
+To expose a skill as `/name` slash command in Antigravity:
+
+**Create `.agents/rules/<name>.md`:**
+```markdown
+# <name>
+
+@../skills/<name>/SKILL.md
+
+Execute this workflow for the current task.
+```
+
+The `@` reference pulls the full SKILL.md content at runtime — one source of truth, two invocation modes.
+
+**When to add a Workflow companion:**
+- The skill is frequently invoked explicitly ("run the spec review now")
+- The team wants a named slash command rather than relying on auto-discovery
+- The skill represents a key phase in the development cycle (e.g. `/write-spec`, `/implement`, `/unity-implement`)
+
+**When NOT to add a Workflow companion:**
+- The skill is always auto-discovered correctly from context
+- The skill is meta/tooling (e.g. `update-skill`, `warp-watch`) — these don't need slash commands
 
 ## When a project skill warrants globalizing
 

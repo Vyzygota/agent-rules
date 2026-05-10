@@ -7,18 +7,16 @@ description: Initialize a new project with WARPEngine agentic structure for Clau
 
 ## Overview
 
-Sets up the standard project structure for spec-driven agentic development. Creates the context file, specs directory, skills directories (for both Claude Code and Antigravity), and skills-lock.json referencing global vyzygota/agent-rules skills.
+Sets up the standard project structure for spec-driven agentic development. Creates the context file, specs directory, skills and rules directories (for both Claude Code and Antigravity), and skills-lock.json referencing global vyzygota/agent-rules skills.
 
 ## Supported environments
 
-This structure works across two AI agent environments simultaneously:
+| Environment | Skills | Rules / Workflows | Global context |
+|---|---|---|---|
+| Claude Code | `.agents/skills/<name>/SKILL.md` | — | `CLAUDE.md` / `~/.claude/CLAUDE.md` |
+| Antigravity IDE | `.agentskills/<name>/SKILL.md` (junction) | `.agents/rules/*.md` → `/name` slash cmds | `~/.gemini/GEMINI.md` |
 
-| Environment | Skills path | MCP config |
-|---|---|---|
-| Claude Code | `.agents/skills/<name>/SKILL.md` | `.claude/settings.json` |
-| Antigravity IDE | `.agentskills/<name>/SKILL.md` | `antigravity://settings` → MCP Servers |
-
-Both use the same `SKILL.md` format (YAML frontmatter + markdown). `.agentskills/` is a junction/symlink to `.agents/skills/` so skills only live in one place.
+Both use the same `SKILL.md` YAML frontmatter format and same MCP JSON config.
 
 ## Prerequisites
 
@@ -40,9 +38,11 @@ Fill in real values — a template with empty fields is useless. Ask the user fo
 
 ### 2. Create directory structure
 
-Create `specs/` and `.agents/skills/`.
+```bash
+mkdir -p specs .agents/skills .agents/rules
+```
 
-Then link `.agentskills/` → `.agents/skills/` so Antigravity discovers the same skills:
+Then link `.agentskills/` → `.agents/skills/` so Antigravity discovers skills:
 
 **Windows (junction — no admin required):**
 ```bash
@@ -54,11 +54,34 @@ cmd /c mklink /J .agentskills .agents\skills
 ln -s .agents/skills .agentskills
 ```
 
-If the junction/symlink fails, create `.agentskills/` as a real directory and note in AGENTS.md that it must be kept in sync with `.agents/skills/`.
+If junction/symlink fails: create `.agentskills/` as a real directory and note in AGENTS.md it must stay in sync.
 
-Add `.agentskills` to `.gitignore` if it's a junction (junctions are not tracked by git meaningfully). If it's a real directory, commit it normally.
+Add `.agentskills` to `.gitignore` when it's a junction. Commit it if it's a real directory.
 
-### 3. Create skills-lock.json
+### 3. Create `.agents/rules/WORKSPACE.md`
+
+This file is the Antigravity Rules context — loaded automatically in every Antigravity session for this workspace.
+
+```markdown
+# Workspace Rules
+
+@../../AGENTS.md
+
+## Agent Mode
+Use Planning mode for feature implementation (specs → task groups → artifacts → verify).
+Use Fast mode for quick fixes and single-file changes.
+
+## Artifact Review
+Always request review before implementing from specs.
+Run tests after implementation and verify against PRODUCT.md invariants by number.
+
+## Skills
+This project uses WARPEngine skills. See .agentskills/ for available skills.
+```
+
+The `@../../AGENTS.md` reference pulls in the full project context automatically — no duplication.
+
+### 4. Create skills-lock.json
 
 ```json
 {
@@ -77,14 +100,14 @@ Add `.agentskills` to `.gitignore` if it's a junction (junctions are not tracked
 }
 ```
 
-If the project uses Unity, add `unity-implement` to the skills list:
+For Unity projects, also add:
 ```json
 "unity-implement": { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/unity-implement/SKILL.md" }
 ```
 
-### 4. Configure MCP (if applicable)
+### 5. Configure MCP (if applicable)
 
-**Claude Code** — add to `.claude/settings.json`:
+**Claude Code** — `.claude/settings.json`:
 ```json
 {
   "mcpServers": {
@@ -96,23 +119,39 @@ If the project uses Unity, add `unity-implement` to the skills list:
 }
 ```
 
-**Antigravity** — open `antigravity://settings` → Editor Settings → MCP Servers and add the same server entry. Antigravity uses identical MCP config format.
+**Antigravity** — `antigravity://settings` → Editor Settings → MCP Servers. Same JSON format.
 
-Both agents will then have access to the same MCP tools.
+### 6. (Optional) Expose key skills as Antigravity Workflows
 
-### 5. Verify and commit
+For skills the team will invoke explicitly (not just auto-discovered), create a companion workflow file in `.agents/rules/`. This makes the skill callable as `/skill-name` in Antigravity chat:
 
 ```bash
-git add AGENTS.md specs/ .agents/ skills-lock.json .claude/settings.json
+# Example: expose unity-implement as /unity-implement
+cat > .agents/rules/unity-implement.md << 'EOF'
+# unity-implement
+
+@../skills/unity-implement/SKILL.md
+
+Execute the unity-implement workflow for the current feature.
+EOF
+```
+
+See `update-skill` for the full workflow exposure pattern.
+
+### 7. Verify and commit
+
+```bash
+git add AGENTS.md specs/ .agents/ skills-lock.json .claude/
 git commit -m "init: add agentic project structure (Claude Code + Antigravity)"
 ```
 
 ## Best Practices
 
-- Fill AGENTS.md with real commands — a template with empty fields gives agents no useful context.
+- Fill AGENTS.md with real commands — empty fields give agents no useful context.
 - Ask the user for build/test/lint commands if you don't know them.
-- If the project already has `.cursorrules`, keep it — some environments read it as a fallback.
-- The junction/symlink approach means skills are written once and discovered by both environments automatically — never copy SKILL.md files manually between the two directories.
+- The junction/symlink means skills are written once and discovered by both environments — never copy SKILL.md manually.
+- `.agents/rules/WORKSPACE.md` uses `@` to reference AGENTS.md — one source of truth for project context.
+- If the project already has `.cursorrules`, keep it — some environments read it as fallback.
 
 ## Related Skills
 
