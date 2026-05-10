@@ -11,6 +11,36 @@
       "sourceType": "github",
       "skillPath": ".agents/skills/write-spec/SKILL.md"
     },
+    "write-product-spec": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/write-product-spec/SKILL.md"
+    },
+    "write-tech-spec": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/write-tech-spec/SKILL.md"
+    },
+    "spec-driven-implementation": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/spec-driven-implementation/SKILL.md"
+    },
+    "implement-specs": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/implement-specs/SKILL.md"
+    },
+    "diagnose-ci-failures": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/diagnose-ci-failures/SKILL.md"
+    },
+    "update-skill": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/update-skill/SKILL.md"
+    },
     "warp-watch": {
       "source": "vyzygota/agent-rules",
       "sourceType": "github",

@@ -1,53 +1,89 @@
 ---
 name: warp-watch
-description: Check Warp's GitHub repositories and changelog for new patterns, conventions, or skills worth adopting into the global methodology. Use monthly or when asked to update the agent development principles.
+description: Run the warp-watch protocol — check warpdotdev/warp and warpdotdev/common-skills for updates, evaluate what's relevant to adopt, and update CLAUDE.md/AGENTS.md + skills accordingly. Use when the user says "sprawdź Warp", "zaktualizuj zasady", "co nowego w Warp", or at the start of a new project month.
 ---
 
 # warp-watch
 
+Run the monthly warp-watch synchronization protocol against the Warp ecosystem.
+
 ## Overview
 
-Keeps the global methodology in vyzygota/agent-rules current with Warp's evolving approach to agentic development. When Warp changes their conventions, we evaluate whether to adopt them.
+Keeps `vyzygota/agent-rules` aligned with Warp's evolving agentic development model. Run once a month or whenever prompted.
 
 ## Prerequisites
 
-- Network access to GitHub API
-- Write access to vyzygota/agent-rules
+- Network access to GitHub API (`gh` CLI authenticated)
+- Write access to `vyzygota/agent-rules`
+
+## Sources to check
+
+| Source | What to look for |
+|---|---|
+| `gh api "repos/warpdotdev/warp/commits?per_page=20&since=<last-sync>"` | Changes to WARP.md, .agents/, specs/, skills-lock.json |
+| `gh api repos/warpdotdev/common-skills/contents/.agents/skills` | New or updated SKILL.md files |
+| `https://docs.warp.dev/changelog/2026/` | New platform features relevant to agents/skills/specs |
 
 ## Workflow
 
-### 1. Fetch recent Warp commits
+### 1. Fetch new commits from warpdotdev/warp
 
-Check: https://api.github.com/repos/warpdotdev/warp/commits?per_page=20
+```bash
+gh api "repos/warpdotdev/warp/commits?per_page=20&since=<LAST_SYNC_DATE>T00:00:00Z"
+```
 
-Look for commits touching: WARP.md, .agents/, specs/, skills-lock.json
+Focus on files: `WARP.md`, `.agents/`, `specs/`, `skills-lock.json`.
 
-### 2. Fetch current skills list from common-skills
+### 2. Fetch skill list from common-skills
 
-Check: https://api.github.com/repos/warpdotdev/common-skills/contents/.agents/skills
+```bash
+gh api repos/warpdotdev/common-skills/contents/.agents/skills
+```
 
-For each new skill, read its SKILL.md and evaluate if the pattern is worth adopting.
+Compare against skills tracked in `skills-lock.json`. For any new skill, fetch its SKILL.md:
 
-### 3. Check changelog
+```bash
+gh api repos/warpdotdev/common-skills/contents/.agents/skills/<name>/SKILL.md \
+  | python -c "import sys,json,base64; d=json.load(sys.stdin); print(base64.b64decode(d['content']).decode())"
+```
 
-Check: https://docs.warp.dev/changelog/2026/
+### 3. Fetch changelog
 
-### 4. Evaluate findings
+Fetch `https://docs.warp.dev/changelog/2026/` and scan for entries related to agents, skills, specs, or agentic workflows.
 
-Adopt if it changes: PRODUCT.md or TECH.md format, SKILL.md structure, AGENTS.md conventions, PR workflow or parallelization guidelines.
+### 4. Evaluate what to adopt
 
-Skip if it's Warp-specific: Rust codebase, desktop UI, enterprise billing.
+**Adopt** if the change affects: PRODUCT.md/TECH.md format, SKILL.md format, AGENTS.md conventions, PR workflow, or agent execution model.
 
-### 5. Update and commit
+**Skip** if it's: Rust/Warp-app-specific implementation, desktop UI, enterprise/team features, or Linear-specific tooling with no generic equivalent.
 
-Edit CLAUDE.md and AGENTS.md with new patterns. Update "Last synced with Warp" date. Commit and push to vyzygota/agent-rules.
+| Relevant | Skip |
+|---|---|
+| Spec format (PRODUCT.md, TECH.md) | Rust-specific (`cargo`, clippy) |
+| SKILL.md structure | Desktop UI changes |
+| Agent execution model | Linear MCP (use generic issue tracker) |
+| PR workflow conventions | Enterprise/team-only features |
+| Parallelization patterns | `warp-integration-test` (Warp-internal) |
+
+### 5. Adapt and create skills
+
+Strip language/toolchain specifics and make adopted skills language-agnostic. Place in `.agents/skills/<name>/SKILL.md`.
+
+### 6. Update repository
+
+- Add new skills to `.agents/skills/`
+- Update `skills-lock.json`
+- Update "Last synced with Warp" date in `CLAUDE.md` and `AGENTS.md`
+- Add a row to the `## Ostatnie sprawdzenia` table in `warp-watch.md`
+- Commit and push to `vyzygota/agent-rules`
 
 ## Best Practices
 
-- Only adopt patterns that improve clarity or correctness — don't change conventions for novelty.
-- Always update the "Last synced" date even if nothing changed.
+- Only adopt patterns that improve clarity or correctness — don't change conventions for novelty
+- Always update the "Last synced" date even if nothing changed
 
 ## Related Skills
 
 - `init-project`
 - `write-spec`
+- `update-skill`

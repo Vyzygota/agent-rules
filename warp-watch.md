@@ -49,3 +49,4 @@ Zaktualizuj CLAUDE.md i AGENTS.md. Zmień datę "Last synced with Warp". Commitu
 |---|---|---|
 | 2026-05-10 | Oz Platform, Skills system, PRODUCT.md+TECH.md format | Tak |
 | 2026-05-10 | v0.2026.05.06 — Mermaid w output agentów, SSH improvements | Tak |
+| 2026-05-10 | common-skills: 11 skillów vs nasze 3. Nowe: write-product-spec, write-tech-spec, spec-driven-implementation, implement-specs, diagnose-ci-failures, update-skill. Brak nowych commitów w warpdotdev/warp po 2026-05-10. | Tak — 6 skillów zaadoptowanych, 2 brakujące SKILL.md uzupełnione |

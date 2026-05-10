@@ -26,7 +26,7 @@ Create folders: specs/ and .agents/skills/
 
 ### 3. Create skills-lock.json
 
-Reference the three global skills: init-project, write-spec, warp-watch from vyzygota/agent-rules.
+Reference global skills from vyzygota/agent-rules. Core set: `init-project`, `write-spec`, `write-product-spec`, `write-tech-spec`, `spec-driven-implementation`, `implement-specs`, `diagnose-ci-failures`, `update-skill`, `warp-watch`.
 
 ### 4. Verify and commit
 
@@ -41,4 +41,9 @@ Add all new files and commit with message: "init: add agentic project structure"
 ## Related Skills
 
 - `write-spec`
+- `write-product-spec`
+- `write-tech-spec`
+- `spec-driven-implementation`
+- `implement-specs`
+- `update-skill`
 - `warp-watch`

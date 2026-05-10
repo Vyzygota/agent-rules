@@ -49,12 +49,13 @@ Keep specs updated as implementation evolves — in the same PR as code.
 
 ## PRODUCT.md Structure
 
-1. **Overview** — what the user sees and why it matters
-2. **Behavior** — numbered, concrete, testable invariants (these map to tests)
-3. **Edge cases** — what happens at boundaries
-4. **Out of scope** — explicitly excluded to prevent scope creep
+Required sections:
+1. **Summary** — 1–3 sentences: feature and desired outcome
+2. **Behavior** — exhaustive numbered, testable invariants (this is the spec)
 
-No Validation section — that belongs in TECH.md.
+Optional (omit heading if empty): **Problem**, **Goals / Non-goals**, **Figma / Design**, **Open questions**
+
+No Validation or Testing sections — those belong in TECH.md.
 
 ---
 
