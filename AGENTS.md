@@ -20,16 +20,31 @@ Agent role: execute mechanical work, keep specs current, flag ambiguity.
 
 ---
 
+## Supported Agent Environments
+
+WARPEngine skills work across two AI agent environments simultaneously:
+
+| Environment | Skills path | Format |
+|---|---|---|
+| Claude Code | `.agents/skills/<name>/SKILL.md` | YAML frontmatter + markdown |
+| Antigravity IDE (Google) | `.agentskills/<name>/SKILL.md` | YAML frontmatter + markdown |
+
+`.agentskills/` is a junction/symlink pointing to `.agents/skills/` — skills live in one place, both environments discover them. MCP config is identical across both (same `mcpServers` JSON format).
+
+---
+
 ## Project Initialization Checklist
 
 When starting work on any project, verify these exist:
 
 - [ ] `AGENTS.md` or `CLAUDE.md` at repo root — project context, build commands, architecture rules
 - [ ] `specs/<id>/` — specs for any non-trivial feature in progress
-- [ ] `.agents/skills/` — directory for project-specific reusable skills
+- [ ] `.agents/skills/` — primary skills directory (Claude Code / WARPEngine)
+- [ ] `.agentskills/` — junction/symlink to `.agents/skills/` (Antigravity IDE)
 - [ ] `skills-lock.json` — references to shared skills from vyzygota/agent-rules
+- [ ] `.claude/settings.json` — MCP server config (Claude Code)
 
-If missing, offer to create them before starting feature work.
+If missing, offer to create them before starting feature work. Use the `init-project` skill.
 
 ---
 
