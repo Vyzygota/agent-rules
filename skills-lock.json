@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "skills": {
+    "init-project": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/init-project/SKILL.md"
+    },
+    "write-spec": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/write-spec/SKILL.md"
+    },
+    "warp-watch": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/warp-watch/SKILL.md"
+    }
+  }
+}
