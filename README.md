@@ -187,6 +187,6 @@ The `@` reference pulls the full SKILL.md content at runtime — one source of t
 
 ## Sync with Upstream
 
-Run the `warp-watch` skill monthly (or before starting a major feature) to check warpdotdev/warp and warpdotdev/common-skills for new patterns worth adopting.
+Run the `warp-watch` skill every 2 weeks (or before starting a major feature) to check warpdotdev/warp and warpdotdev/common-skills for new patterns worth adopting.
 
 Last synced: **2026-05-10**

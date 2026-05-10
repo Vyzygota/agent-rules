@@ -1,15 +1,15 @@
 ---
 name: warp-watch
-description: Run the warp-watch protocol — check warpdotdev/warp and warpdotdev/common-skills for updates, evaluate what's relevant to adopt, and update CLAUDE.md/AGENTS.md + skills accordingly. Use when the user says "sprawdź Warp", "zaktualizuj zasady", "co nowego w Warp", or at the start of a new project month.
+description: Run the warp-watch protocol — check warpdotdev/warp and warpdotdev/common-skills for updates, evaluate what's relevant to adopt, and update CLAUDE.md/AGENTS.md + skills accordingly. Use when the user says "sprawdź Warp", "zaktualizuj zasady", "co nowego w Warp", or every 2 weeks.
 ---
 
 # warp-watch
 
-Run the monthly warp-watch synchronization protocol against the Warp ecosystem.
+Run the bi-weekly warp-watch synchronization protocol against the Warp ecosystem.
 
 ## Overview
 
-Keeps `vyzygota/agent-rules` aligned with Warp's evolving agentic development model. Run once a month or whenever prompted.
+Keeps `vyzygota/agent-rules` aligned with Warp's evolving agentic development model. Run every 2 weeks or whenever prompted.
 
 ## Prerequisites
 

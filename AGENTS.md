@@ -83,4 +83,4 @@ Minimum: project name, tech stack, build/test/lint commands, architecture rules,
 
 ## Warp-Watch Protocol
 
-Run when starting new projects, monthly, or on request. See `warp-watch.md`.
+Run when starting new projects, every 2 weeks, or on request. See `warp-watch.md`.
