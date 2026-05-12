@@ -79,7 +79,7 @@ Optional (omit heading if empty): **Problem**, **Goals / Non-goals**, **Figma / 
 
 No Validation or Testing sections — those belong in TECH.md.
 
-→ Skills: [write-product-spec](.agents/skills/write-product-spec/SKILL.md)
+Use the `write-product-spec` skill to generate this file. → [write-product-spec](.agents/skills/write-product-spec/SKILL.md)
 
 ---
 
@@ -95,7 +95,7 @@ Required sections:
 Optional (omit heading if empty):
 - **End-to-end flow**, **Diagram** (Mermaid), **Risks and mitigations**, **Follow-ups**
 
-→ Skills: [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
+Use the `write-tech-spec` skill to generate this file. → [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
 
 ---
 
