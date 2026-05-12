@@ -95,7 +95,8 @@ The `@../../AGENTS.md` reference pulls in the full project context automatically
     "implement-specs":            { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/implement-specs/SKILL.md" },
     "diagnose-ci-failures":       { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/diagnose-ci-failures/SKILL.md" },
     "update-skill":               { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/update-skill/SKILL.md" },
-    "warp-watch":                 { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/warp-watch/SKILL.md" }
+    "warp-watch":                 { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/warp-watch/SKILL.md" },
+    "graphify":                   { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/graphify/SKILL.md" }
   }
 }
 ```
@@ -105,7 +106,47 @@ For Unity projects, also add:
 "unity-implement": { "source": "vyzygota/agent-rules", "sourceType": "github", "skillPath": ".agents/skills/unity-implement/SKILL.md" }
 ```
 
-### 5. Configure MCP (if applicable)
+### 5. Set up knowledge graph (recommended)
+
+Graphify builds a queryable graph from the entire codebase — code, docs, PDFs, images, video — so the agent queries relationships instead of searching raw files. Reduces token usage significantly on larger codebases.
+
+```bash
+# Install (Python 3.10+ required)
+uv tool install graphifyy    # or: pipx install graphifyy
+
+# Wire Claude Code: adds PreToolUse hook + CLAUDE.md directive
+graphify install --platform claude-code
+
+# Build the initial graph
+graphify .
+
+# Keep graphify-out/ local — do not commit built artifacts
+echo "graphify-out/" >> .gitignore
+```
+
+**Auto-init hook** — add to `.claude/settings.json` so the agent auto-installs graphify whenever `skills-lock.json` is written with a `graphify` entry:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const chunks=[]; process.stdin.on('data',d=>chunks.push(d)); process.stdin.on('end',()=>{ try{ const d=JSON.parse(Buffer.concat(chunks)); const fp=(d.tool_input||{}).file_path||''; if(fp.endsWith('skills-lock.json')){ const fs=require('fs'); const c=fs.readFileSync(fp,'utf8'); if(c.includes('graphify')){ require('child_process').execSync('graphify install --platform claude-code',{stdio:'inherit'}); } } }catch(e){} });\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+This hook is idempotent — graphify skips reinstall if the PreToolUse hook already exists.
+
+### 7. Configure MCP (if applicable)
 
 **Claude Code** — `.claude/settings.json`:
 ```json
@@ -121,7 +162,7 @@ For Unity projects, also add:
 
 **Antigravity** — `antigravity://settings` → Editor Settings → MCP Servers. Same JSON format.
 
-### 6. (Optional) Expose key skills as Antigravity Workflows
+### 8. (Optional) Expose key skills as Antigravity Workflows
 
 For skills the team will invoke explicitly (not just auto-discovered), create a companion workflow file in `.agents/rules/`. This makes the skill callable as `/skill-name` in Antigravity chat:
 
@@ -138,7 +179,7 @@ EOF
 
 See `update-skill` for the full workflow exposure pattern.
 
-### 7. Verify and commit
+### 9. Verify and commit
 
 ```bash
 git add AGENTS.md specs/ .agents/ skills-lock.json .claude/
@@ -162,4 +203,5 @@ git commit -m "init: add agentic project structure (Claude Code + Antigravity)"
 - `implement-specs`
 - `update-skill`
 - `warp-watch`
+- `graphify`
 - `unity-implement` (Unity projects only)

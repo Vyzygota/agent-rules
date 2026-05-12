@@ -50,6 +50,16 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/unity-implement/SKILL.md"
+    },
+    "graphify": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/graphify/SKILL.md"
+    },
+    "self-audit": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/self-audit/SKILL.md"
     }
   }
 }

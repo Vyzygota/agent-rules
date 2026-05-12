@@ -18,6 +18,8 @@ Agent work is most effective when:
 Human role: decide what matters, define behavior, review tradeoffs.
 Agent role: execute mechanical work, keep specs current, flag ambiguity.
 
+→ Skills: [write-spec](.agents/skills/write-spec/SKILL.md) · [spec-driven-implementation](.agents/skills/spec-driven-implementation/SKILL.md) · [implement-specs](.agents/skills/implement-specs/SKILL.md)
+
 ---
 
 ## Supported Agent Environments
@@ -47,6 +49,8 @@ When starting work on any project, verify these exist:
 
 If missing, offer to create them before starting feature work. Use the `init-project` skill.
 
+→ Skills: [init-project](.agents/skills/init-project/SKILL.md) · [self-audit](.agents/skills/self-audit/SKILL.md)
+
 ---
 
 ## When to Write Specs
@@ -58,6 +62,8 @@ If missing, offer to create them before starting feature work. Use the `init-pro
 | New user-facing feature | Write `PRODUCT.md` + `TECH.md` |
 | Large cross-cutting change | Full spec, longer is fine if every section earns its place |
 
+→ Skills: [write-spec](.agents/skills/write-spec/SKILL.md) · [write-product-spec](.agents/skills/write-product-spec/SKILL.md) · [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
+
 ---
 
 ## PR Workflow
@@ -67,11 +73,15 @@ If missing, offer to create them before starting feature work. Use the `init-pro
 3. Draft PR early, self-review before marking ready
 4. Keep specs updated as implementation evolves
 
+→ Skills: [spec-driven-implementation](.agents/skills/spec-driven-implementation/SKILL.md) · [implement-specs](.agents/skills/implement-specs/SKILL.md) · [diagnose-ci-failures](.agents/skills/diagnose-ci-failures/SKILL.md)
+
 ---
 
 ## Parallelization
 
 Evaluate for every non-trivial feature. In TECH.md specify: agent name, execution mode (local/remote), worktree, branch, file ownership, merge strategy.
+
+→ Skills: [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
 
 ---
 
@@ -79,8 +89,12 @@ Evaluate for every non-trivial feature. In TECH.md specify: agent name, executio
 
 Minimum: project name, tech stack, build/test/lint commands, architecture rules, key files.
 
+→ Skills: [init-project](.agents/skills/init-project/SKILL.md)
+
 ---
 
 ## Warp-Watch Protocol
 
-Run when starting new projects, every 2 weeks, or on request. See `warp-watch.md`.
+Run when starting new projects, every 2 weeks, or on request. See [warp-watch.md](warp-watch.md).
+
+→ Skills: [warp-watch](.agents/skills/warp-watch/SKILL.md) · [self-audit](.agents/skills/self-audit/SKILL.md)

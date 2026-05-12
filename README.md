@@ -51,6 +51,8 @@ Agent role: execute mechanical work, keep specs current, flag ambiguity.
 | [`diagnose-ci-failures`](.agents/skills/diagnose-ci-failures/SKILL.md) | Investigate and fix failing CI checks |
 | [`update-skill`](.agents/skills/update-skill/SKILL.md) | Create or update a SKILL.md file |
 | [`warp-watch`](.agents/skills/warp-watch/SKILL.md) | Sync with upstream Warp patterns; detect drift |
+| [`self-audit`](.agents/skills/self-audit/SKILL.md) | Audit and self-correct repo structure; run at session start and as step 0 of warp-watch |
+| [`graphify`](.agents/skills/graphify/SKILL.md) | Build a knowledge graph from the codebase; query it instead of searching raw files to cut token usage |
 
 ---
 
@@ -144,6 +146,79 @@ Logs remain essential — they catch what the eye cannot (null refs, wrong value
 Set up once per project. Position a camera to frame what matters. From that point on, the agent does not need to be told what the scene looks like — it can look.
 
 See [`unity-camera-sensor`](.agents/skills/unity-camera-sensor/SKILL.md) for full setup, API reference, and camera positioning strategies.
+
+---
+
+## Knowledge Graph — `graphify`
+
+> **Stop searching files. Start querying relationships.**
+
+Without a knowledge graph, the agent searches linearly: Glob → Grep → Read, consuming tokens proportional to codebase size. On a large project this is slow and expensive. With a graph, the agent answers "what connects `AuthService` to the database?" in a single query against a pre-built index.
+
+**Graphify builds this graph from the entire project** — source code, docs, PDFs, images, and video — without sending code anywhere. Pass 1 (AST extraction via Tree-sitter) is offline and deterministic. Passes 2–3 use local whisper and your own Claude API key for media and docs.
+
+After installation, a `PreToolUse` hook fires before every `Glob` and `Grep` call, telling Claude to check `GRAPH_REPORT.md` first. This changes the agent's default behavior from file search to graph query — no prompt engineering required.
+
+### Setup
+
+```bash
+# 1. Install
+uv tool install graphifyy    # or: pipx install graphifyy
+
+# 2. Wire Claude Code hook + CLAUDE.md directive
+graphify install --platform claude-code
+
+# 3. Build the graph (run once per session; --update for incremental)
+graphify .
+
+# 4. Add to .gitignore
+echo "graphify-out/" >> .gitignore
+```
+
+### Using the graph as an agent
+
+| Goal | Command |
+|---|---|
+| Understand the codebase before implementing | Read `graphify-out/GRAPH_REPORT.md` — lists "god nodes" and community clusters |
+| Cross-file relationship question | `graphify query "what connects auth to the database?"` |
+| Trace connection between two components | `graphify path "UserService" "DatabasePool"` |
+| Understand an unfamiliar class/function | `graphify explain "RateLimiter"` |
+| Generate architecture docs | `graphify export callflow-html` |
+| Keep graph current in CI / on commit | `graphify hook install` |
+
+### What it produces
+
+| File | Content |
+|---|---|
+| `graphify-out/GRAPH_REPORT.md` | God nodes, surprising connections, suggested queries — read this first |
+| `graphify-out/graph.html` | Interactive visualization — click, filter, zoom/pan |
+| `graphify-out/graph.json` | Full queryable graph for programmatic use |
+
+### Automatic initialization via PostToolUse hook
+
+Add this to `.claude/settings.json` to auto-run `graphify install` whenever `skills-lock.json` is written and contains `graphify`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const fs=require('fs');const f='skills-lock.json';if(fs.existsSync(f)&&JSON.stringify(JSON.parse(fs.readFileSync(f))).includes('graphify')){require('child_process').execSync('graphify install --platform claude-code',{stdio:'inherit'})}\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+This hook fires after every `Write` tool call, checks whether `skills-lock.json` now contains `graphify`, and runs the install if so. First-time setup only — subsequent calls are idempotent (Graphify skips reinstall if the hook already exists).
+
+See [`graphify`](.agents/skills/graphify/SKILL.md) for full CLI reference, three-pass architecture details, and monorepo patterns.
 
 ---
 

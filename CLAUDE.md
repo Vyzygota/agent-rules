@@ -18,6 +18,8 @@ Agent work is most effective when:
 Human role: decide what matters, define behavior, review tradeoffs.
 Agent role: execute mechanical work, keep specs current, flag ambiguity.
 
+→ Skills: [write-spec](.agents/skills/write-spec/SKILL.md) · [spec-driven-implementation](.agents/skills/spec-driven-implementation/SKILL.md) · [implement-specs](.agents/skills/implement-specs/SKILL.md)
+
 ---
 
 ## Supported Agent Environments
@@ -47,6 +49,8 @@ When starting work on any project, verify these exist:
 
 If missing, offer to create them before starting feature work. Use the `init-project` skill.
 
+→ Skills: [init-project](.agents/skills/init-project/SKILL.md) · [self-audit](.agents/skills/self-audit/SKILL.md)
+
 ---
 
 ## When to Write Specs
@@ -61,6 +65,8 @@ If missing, offer to create them before starting feature work. Use the `init-pro
 Write specs to `specs/<ticket-or-feature-name>/` before implementation.
 Keep specs updated as implementation evolves — in the same PR as code.
 
+→ Skills: [write-spec](.agents/skills/write-spec/SKILL.md) · [write-product-spec](.agents/skills/write-product-spec/SKILL.md) · [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
+
 ---
 
 ## PRODUCT.md Structure
@@ -72,6 +78,8 @@ Required sections:
 Optional (omit heading if empty): **Problem**, **Goals / Non-goals**, **Figma / Design**, **Open questions**
 
 No Validation or Testing sections — those belong in TECH.md.
+
+→ Skills: [write-product-spec](.agents/skills/write-product-spec/SKILL.md)
 
 ---
 
@@ -87,6 +95,8 @@ Required sections:
 Optional (omit heading if empty):
 - **End-to-end flow**, **Diagram** (Mermaid), **Risks and mitigations**, **Follow-ups**
 
+→ Skills: [write-tech-spec](.agents/skills/write-tech-spec/SKILL.md)
+
 ---
 
 ## Skill Format
@@ -94,3 +104,5 @@ Optional (omit heading if empty):
 Create a skill when the same workflow will be executed more than once or by multiple agents.
 
 File: `.agents/skills/<name>/SKILL.md` with YAML frontmatter (auto-discovered by both Claude Code and Antigravity via `.agentskills/` junction):
+
+→ Skills: [update-skill](.agents/skills/update-skill/SKILL.md) · [graphify](.agents/skills/graphify/SKILL.md)

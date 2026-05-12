@@ -26,6 +26,12 @@ Keeps `vyzygota/agent-rules` aligned with Warp's evolving agentic development mo
 
 ## Workflow
 
+### 0. Run self-audit first
+
+Before checking upstream, verify the repo's own structure is healthy:
+
+Run the `self-audit` skill. Fix any reported drift before proceeding. If the knowledge graph is stale, rebuild it now — upstream patterns are easier to evaluate with a current graph.
+
 ### 1. Fetch new commits from warpdotdev/warp
 
 ```bash
@@ -84,6 +90,7 @@ Strip language/toolchain specifics and make adopted skills language-agnostic. Pl
 
 ## Related Skills
 
+- `self-audit` — run as step 0; detects and fixes structural drift before sync
 - `init-project`
 - `write-spec`
 - `update-skill`
