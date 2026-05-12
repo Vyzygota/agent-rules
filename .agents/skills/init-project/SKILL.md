@@ -115,7 +115,7 @@ Graphify builds a queryable graph from the entire codebase — code, docs, PDFs,
 uv tool install graphifyy    # or: pipx install graphifyy
 
 # Wire Claude Code: adds PreToolUse hook + CLAUDE.md directive
-graphify install --platform claude-code
+graphify claude install
 
 # Build the initial graph
 graphify .
@@ -135,7 +135,7 @@ echo "graphify-out/" >> .gitignore
         "hooks": [
           {
             "type": "command",
-            "command": "node -e \"const chunks=[]; process.stdin.on('data',d=>chunks.push(d)); process.stdin.on('end',()=>{ try{ const d=JSON.parse(Buffer.concat(chunks)); const fp=(d.tool_input||{}).file_path||''; if(fp.endsWith('skills-lock.json')){ const fs=require('fs'); const c=fs.readFileSync(fp,'utf8'); if(c.includes('graphify')){ require('child_process').execSync('graphify install --platform claude-code',{stdio:'inherit'}); } } }catch(e){} });\""
+            "command": "node -e \"const chunks=[]; process.stdin.on('data',d=>chunks.push(d)); process.stdin.on('end',()=>{ try{ const d=JSON.parse(Buffer.concat(chunks)); const fp=(d.tool_input||{}).file_path||''; if(fp.endsWith('skills-lock.json')){ const fs=require('fs'); const c=fs.readFileSync(fp,'utf8'); if(c.includes('graphify')){ require('child_process').execSync('graphify claude install',{stdio:'inherit'}); } } }catch(e){} });\""
           }
         ]
       }

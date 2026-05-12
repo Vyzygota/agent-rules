@@ -49,7 +49,7 @@ pipx install graphifyy
 ### Integrate with Claude Code
 
 ```bash
-graphify install --platform claude-code
+graphify claude install
 # or equivalently:
 graphify claude install
 ```
@@ -163,7 +163,7 @@ When initializing a project that will use Graphify, add to `skills-lock.json`:
 And run after project init:
 
 ```bash
-graphify install --platform claude-code
+graphify claude install
 echo "graphify-out/" >> .gitignore
 ```
 
