@@ -8,6 +8,107 @@ Spec-driven, agent-executed. Skills live once in `.agents/skills/`, discovered s
 
 ---
 
+## What Is This?
+
+WARPEngine is a **personal agent operating system** — a single repo of rules and skills that governs how AI agents behave across every project you own.
+
+Without it: every project reinvents agent behavior ad hoc. With it: every project inherits the same spec-driven workflow, the same knowledge graph tooling, and the same dual-IDE support (Claude Code + Antigravity) automatically.
+
+**What you get when you adopt WARPEngine in a project:**
+
+- A `.agents/skills/` directory with reusable agent workflows (specs, implementation, review, graphify, Unity)
+- A `.agentskills/` junction — the same skills discovered by both IDEs without duplication
+- A `skills-lock.json` — versioned reference to shared skills from this upstream repo
+- A `CLAUDE.md` / `AGENTS.md` — project context loaded automatically into every agent session
+- A knowledge graph (`graphify`) — agents query relationships instead of searching raw files
+
+**Human architect's role:** decide what to build, define behavior in specs, review tradeoffs.  
+**Agent's role:** execute mechanical work, keep specs current, flag ambiguity.
+
+---
+
+## Adopting WARPEngine in Your Project
+
+For a new or existing project, follow these steps once:
+
+### 1. Prerequisites
+
+- This repo cloned and symlinked — see [Setup on a New Machine](#setup-on-a-new-machine) below
+- Claude Code or Antigravity IDE open in your project directory
+
+### 2. Bootstrap the project
+
+Run in your project (Claude Code chat or Antigravity):
+
+```
+/init-project
+```
+
+This creates: `.agents/skills/`, `.agentskills/` junction, `skills-lock.json`, starter `CLAUDE.md`/`AGENTS.md`, and optional `graphify` wiring.
+
+### 3. Before any non-trivial feature — write a spec
+
+```
+/write-spec
+```
+
+Produces `specs/<feature>/PRODUCT.md` (behavior invariants) and `TECH.md` (implementation plan).  
+Single-file, obvious features → skip the spec, implement directly.
+
+### 4. Hand the spec to the agent
+
+```
+/spec-driven-implementation
+```
+
+or
+
+```
+/implement-specs
+```
+
+The agent reads `PRODUCT.md` + `TECH.md`, executes in order, maps tests to invariants by number.
+
+### 5. Review before merge
+
+```
+/review
+```
+
+Agent review first, then human. Specs and code land in the same PR.
+
+---
+
+## Invoking Skills — How to Trigger Agents
+
+Skills are invoked by typing a slash command in the IDE chat:
+
+| Environment | Syntax | Discovery |
+|---|---|---|
+| Claude Code | `/skill-name` in chat | `.agents/skills/<name>/SKILL.md` |
+| Antigravity IDE | `/skill-name` as slash command | `.agents/rules/<name>.md` companion |
+
+Both IDEs read the same SKILL.md via the `.agentskills/` junction — the skill runs identically in both.
+
+**Examples:**
+
+```
+/self-audit              → repo health check; run at session start
+/write-spec              → generate PRODUCT.md + TECH.md for a feature
+/graphify                → build or query the knowledge graph
+/spec-driven-implementation  → implement from approved specs
+/review                  → review the current branch before merge
+/warp-watch              → sync upstream Warp patterns (every 14 days)
+```
+
+**Automatic triggers (no slash command needed):**
+
+- `PreToolUse` hook — before every Glob/Grep, agent checks `GRAPH_REPORT.md` first (after `graphify claude install`)
+- `PostToolUse` hook — auto-runs `graphify claude install` when `skills-lock.json` is written with a `graphify` entry
+- Skills can spawn sub-agents in isolated worktrees for parallelized implementation tasks
+
+---
+
 ## Session Rituals
 
 Run these at the start of every session — in this order:
