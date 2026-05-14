@@ -5,6 +5,7 @@ Global agent development principles and reusable skills for all projects by Piot
 Spec-driven, agent-executed. Skills live once in `.agents/skills/`, discovered simultaneously by Claude Code and Antigravity IDE via `.agentskills/` junction. Full philosophy and conventions: [AGENTS.md](AGENTS.md) · [CLAUDE.md](CLAUDE.md).
 
 > Adapted from [warpdotdev/warp](https://github.com/warpdotdev/warp) and [warpdotdev/common-skills](https://github.com/warpdotdev/common-skills).
+> Inspired by [obra/superpowers](https://github.com/obra/superpowers) (subagents, git worktrees, strict TDD).
 
 ---
 
