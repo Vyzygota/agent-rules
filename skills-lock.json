@@ -60,6 +60,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/self-audit/SKILL.md"
+    },
+    "playwriter": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/playwriter/SKILL.md"
     }
   }
 }

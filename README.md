@@ -33,6 +33,7 @@ Trigger skills by typing `/skill-name` in your IDE.
 | [`diagnose-ci-failures`](.agents/skills/diagnose-ci-failures/SKILL.md) | Fix failing CI pipelines |
 | [`warp-watch`](.agents/skills/warp-watch/SKILL.md) | Sync upstream patterns (run every 2 weeks) |
 | [`unity-implement`](.agents/skills/unity-implement/SKILL.md) | Implement Unity features via MCP |
+| [`playwriter`](.agents/skills/playwriter/SKILL.md) | Agentic browser automation and testing |
 
 *(See `.agents/skills/` for the full list including `unity-camera-sensor`, `update-skill`, etc.)*
 
