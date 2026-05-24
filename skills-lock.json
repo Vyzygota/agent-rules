@@ -85,6 +85,11 @@
       "source": "warpdotdev/common-skills",
       "sourceType": "github",
       "skillPath": ".agents/skills/resolve-merge-conflicts/SKILL.md"
+    },
+    "compress-memory": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/compress-memory/SKILL.md"
     }
   }
 }
