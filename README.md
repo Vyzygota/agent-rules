@@ -34,6 +34,9 @@ Trigger skills by typing `/skill-name` in your IDE.
 | [`warp-watch`](.agents/skills/warp-watch/SKILL.md) | Sync upstream patterns (run every 2 weeks) |
 | [`unity-implement`](.agents/skills/unity-implement/SKILL.md) | Implement Unity features via MCP |
 | [`playwriter`](.agents/skills/playwriter/SKILL.md) | Agentic browser automation and testing |
+| [`council`](.agents/skills/council/SKILL.md) | Multi-model subagent council for hard decisions |
+| [`check-impl-against-spec`](.agents/skills/check-impl-against-spec/SKILL.md) | Verify PR implementation matches spec |
+| [`resolve-merge-conflicts`](.agents/skills/resolve-merge-conflicts/SKILL.md) | Resolve Git conflicts with minimal context |
 
 *(See `.agents/skills/` for the full list including `unity-camera-sensor`, `update-skill`, etc.)*
 

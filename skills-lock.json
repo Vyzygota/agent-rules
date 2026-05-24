@@ -70,6 +70,21 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/unity-camera-sensor/SKILL.md"
+    },
+    "council": {
+      "source": "warpdotdev/common-skills",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/council/SKILL.md"
+    },
+    "check-impl-against-spec": {
+      "source": "warpdotdev/common-skills",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/check-impl-against-spec/SKILL.md"
+    },
+    "resolve-merge-conflicts": {
+      "source": "warpdotdev/common-skills",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/resolve-merge-conflicts/SKILL.md"
     }
   }
 }
