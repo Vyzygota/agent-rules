@@ -232,3 +232,6 @@ If all checks pass: `Self-audit complete. No drift detected — ready to work.`
 - `warp-watch` — calls self-audit as step 0; handles upstream sync
 - `graphify` — knowledge graph that self-audit checks for currency
 - `update-skill` — use when self-audit flags a missing or outdated skill file
+- `council` — use for ambiguous architectural decisions found during audit
+- `check-impl-against-spec` — use when self-audit finds spec/implementation drift
+- `resolve-merge-conflicts` — use when audit finds unresolved merge state

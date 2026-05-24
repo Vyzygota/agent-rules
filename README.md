@@ -38,7 +38,7 @@ Trigger skills by typing `/skill-name` in your IDE.
 | [`check-impl-against-spec`](.agents/skills/check-impl-against-spec/SKILL.md) | Verify PR implementation matches spec |
 | [`resolve-merge-conflicts`](.agents/skills/resolve-merge-conflicts/SKILL.md) | Resolve Git conflicts with minimal context |
 
-*(See `.agents/skills/` for the full list including `unity-camera-sensor`, `update-skill`, etc.)*
+*(Full list also includes: `write-product-spec`, `write-tech-spec`, `spec-driven-implementation`, `unity-camera-sensor`, `update-skill`)*
 
 ## 💻 Setup on a New Machine
 
@@ -47,11 +47,9 @@ Clone the repo, then link the global rule file to your IDE:
 **Claude Code:**
 ```bash
 git clone https://github.com/vyzygota/agent-rules ~/agent-rules
-# macOS / Linux
-ln -sf ~/agent-rules/CLAUDE.md ~/.claude/CLAUDE.md
-# Windows (PowerShell)
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.claude\CLAUDE.md" -Target "$env:USERPROFILE\agent-rules\CLAUDE.md"
 ```
+
+> **Note:** Do NOT symlink `CLAUDE.md` to `~/.claude/CLAUDE.md`. The global `~/.claude/CLAUDE.md` should contain memory management instructions (see [Memory System](#memory-system) below). The `CLAUDE.md` in this repo is the project-level WARPEngine rules — Claude Code loads both automatically.
 
 **Antigravity IDE:**
 ```bash
@@ -60,6 +58,25 @@ ln -sf ~/agent-rules/AGENTS.md ~/.gemini/GEMINI.md
 # Windows (PowerShell)
 New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gemini\GEMINI.md" -Target "$env:USERPROFILE\agent-rules\AGENTS.md"
 ```
+
+## 🧠 Memory System
+
+The global `~/.claude/CLAUDE.md` holds routing rules for the structured memory system at `~/.claude/memory/`. A `PreToolUse` hook (`~/.claude/hooks/pre-tool-memory.sh`) auto-injects project `MEMORY.md` and the global index before every tool call.
+
+```
+~/.claude/
+├── CLAUDE.md              # global routing rules + response style
+├── memory/
+│   ├── memory.md          # global index
+│   ├── general.md         # cross-project preferences, identity
+│   ├── tools/             # per-tool configs and workarounds
+│   └── domain/            # knowledge promoted from project memory
+└── hooks/
+    ├── pre-tool-memory.py # injects memory before each tool call
+    └── pre-tool-memory.sh # bash wrapper (~5ms overhead, PPID flag)
+```
+
+Each project has its own `~/.claude/projects/{key}/memory/MEMORY.md` (200-line budget).
 
 ## 🧠 Advanced Features
 

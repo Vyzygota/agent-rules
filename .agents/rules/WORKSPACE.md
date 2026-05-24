@@ -19,6 +19,7 @@ Run `/self-audit` before any other work. It checks repo structure, rebuilds the 
 
 1. Skills live in `.agents/skills/<name>/SKILL.md` — one source, never duplicate
 2. `.agentskills/` is a junction → `.agents/skills/` — never copy SKILL.md manually
+   *(Google Drive FUSE mount does not support symlinks — junction unavailable here; Claude Code uses `.agents/skills/` directly)*
 3. Every new skill must be added to `skills-lock.json` AND `README.md`
 4. `CLAUDE.md` and `AGENTS.md` stay in sync on philosophy and checklist sections
 5. `warp-watch` runs every 2 weeks — check `warp-watch.md` for last sync date
