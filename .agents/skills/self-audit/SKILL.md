@@ -29,6 +29,11 @@ If either is missing: recreate from the init-project template, filling in real v
 ### 2. specs/ directory
 
 ```bash
+# Linux / macOS
+[ -d specs ] && echo "OK" || (mkdir -p specs && touch specs/.gitkeep && echo "FIXED")
+```
+
+```bash
 # Windows
 powershell -Command "if(-not(Test-Path 'specs')){New-Item -ItemType Directory -Path 'specs' -Force; New-Item -ItemType File -Path 'specs/.gitkeep' -Force; Write-Host 'FIXED'} else {'OK'}"
 ```
@@ -79,6 +84,18 @@ powershell -Command "
 Read `skills-lock.json`. For each entry, verify the `skillPath` file exists locally:
 
 ```bash
+# Linux / macOS
+node -e "
+  const lock = JSON.parse(require('fs').readFileSync('skills-lock.json','utf8'));
+  const fs = require('fs');
+  Object.entries(lock.skills).forEach(([name, s]) => {
+    console.log(fs.existsSync(s.skillPath) ? 'OK: ' + s.skillPath : 'MISSING: ' + s.skillPath);
+  });
+"
+```
+
+```bash
+# Windows
 powershell -Command "
   \$lock = Get-Content skills-lock.json | ConvertFrom-Json
   \$lock.skills.PSObject.Properties | ForEach-Object {
@@ -116,6 +133,18 @@ Check `.claude/settings.json` exists. If missing, create with graphify PostToolU
 ### 7. Knowledge graph currency
 
 ```bash
+# Linux / macOS
+report="graphify-out/GRAPH_REPORT.md"
+if [ ! -f "$report" ]; then
+  echo "MISSING — run: graphify ."
+else
+  age=$(( ( $(date +%s) - $(date -r "$report" +%s) ) / 86400 ))
+  [ "$age" -gt 7 ] && echo "STALE ($age days) — run: graphify . --update" || echo "OK ($age days old)"
+fi
+```
+
+```bash
+# Windows
 powershell -Command "
   \$report = 'graphify-out/GRAPH_REPORT.md'
   if(-not(Test-Path \$report)){
@@ -140,6 +169,14 @@ If missing or stale: run `graphify .` (full rebuild) or `graphify . --update` (i
 Read `warp-watch.md` — find the most recent date in the `## Ostatnie sprawdzenia` table.
 
 ```bash
+# Linux / macOS
+last=$(grep -oP '\d{4}-\d{2}-\d{2}' warp-watch.md | sort -r | head -1)
+age=$(( ( $(date +%s) - $(date -d "$last" +%s) ) / 86400 ))
+[ "$age" -gt 14 ] && echo "DUE: last sync $last ($age days ago) — run /warp-watch" || echo "OK: last sync $last"
+```
+
+```bash
+# Windows
 powershell -Command "
   \$lines = Get-Content warp-watch.md
   \$dates = \$lines | Where-Object { \$_ -match '\d{4}-\d{2}-\d{2}' } | ForEach-Object {

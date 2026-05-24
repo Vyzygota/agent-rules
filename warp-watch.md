@@ -5,7 +5,7 @@ Procedura sprawdzania co nowego w ekosystemie Warp i aktualizacji globalnych zas
 ## Kiedy uruchamiać
 
 - Na początku nowego projektu
-- Raz w miesiącu podczas aktywnego developmentu
+- Raz na 2 tygodnie podczas aktywnego developmentu
 - Gdy użytkownik powie: "sprawdź Warp", "zaktualizuj zasady", "co nowego w Warp"
 
 ## Repozytoria do śledzenia

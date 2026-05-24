@@ -65,6 +65,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/playwriter/SKILL.md"
+    },
+    "unity-camera-sensor": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/unity-camera-sensor/SKILL.md"
     }
   }
 }
