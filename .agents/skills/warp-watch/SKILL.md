@@ -57,6 +57,28 @@ gh api repos/warpdotdev/common-skills/contents/.agents/skills/<name>/SKILL.md \
 
 Fetch `https://docs.warp.dev/changelog/2026/` and scan for entries related to agents, skills, specs, or agentic workflows.
 
+### 3b. Audit external tool versions in skills-lock.json
+
+For every skill in `skills-lock.json`, check if its SKILL.md references an external tool (look for GitHub links, npm packages, pip packages, version numbers). For each external tool found:
+
+```bash
+gh api "repos/<owner>/<repo>/releases/latest" --jq '{tag, published_at, body}'
+gh api "repos/<owner>/<repo>/commits?per_page=5" --jq '.[].commit | {date: .author.date, msg: .message}'
+```
+
+Update the skill's SKILL.md if a new version introduced:
+- New CLI flags or commands
+- Breaking behavior changes
+- Security fixes
+- New APIs worth documenting
+
+Also verify that skills sourced from `warpdotdev/common-skills` haven't diverged upstream:
+```bash
+gh api "repos/warpdotdev/common-skills/contents/.agents/skills/<name>/SKILL.md" --jq '.sha'
+git hash-object ".agents/skills/<name>/SKILL.md"
+```
+If SHAs differ, fetch upstream and evaluate whether to adopt the change or keep our version (upstream may be Oz-specific).
+
 ### 4. Evaluate what to adopt
 
 **Adopt** if the change affects: PRODUCT.md/TECH.md format, SKILL.md format, AGENTS.md conventions, PR workflow, or agent execution model.

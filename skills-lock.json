@@ -90,6 +90,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/compress-memory/SKILL.md"
+    },
+    "agent-workflow": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/agent-workflow/SKILL.md"
     }
   }
 }
