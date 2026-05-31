@@ -5,6 +5,8 @@ description: Use Playwriter to directly control the user's actual Chrome browser
 
 # playwriter
 
+> v0.2.0 (2026-05-19)
+
 ## Core Concept
 
 Playwriter is an MCP server and CLI that allows agents to control the user's *actual* Chrome browser. 
@@ -50,23 +52,43 @@ Click the extension icon on a tab to connect it (it will turn green).
    playwriter -e "snapshot({ page, search: /button|submit/i })"
    ```
 
-2. **Isolated State:**
+2. **Execute from file (`-f` flag) — preferred for multi-step scripts:**
+   Instead of long inline `-e` strings, write JS to a file and use `-f`. The file has the same sandbox (`state`, `page`, `context`) as `-e`. `-e` and `-f` are mutually exclusive.
+   ```bash
+   playwriter -s 1 -f script.js
+   ```
+
+3. **Isolated State:**
    Use the `state` object to share variables between executions without polluting the browser window.
    ```bash
    playwriter -s 1 -e "state.myPage = context.pages().find(p => p.url() === 'about:blank') ?? context.newPage();"
    ```
 
-3. **Visual Labels (Fallback):**
+4. **React Component Inspection:**
+   Get the nearest React component name, parent hierarchy, sanitized props, and source file locations for a given locator.
+   ```bash
+   playwriter -e "const info = await getReactComponentInfo({ locator: page.locator('button.submit') }); console.log(JSON.stringify(info))"
+   ```
+   Returns `null` for non-React elements.
+
+5. **Visual Labels (Fallback):**
    If the accessibility snapshot isn't enough to understand spatial layout, use Vimium-style visual labels.
    ```bash
    playwriter -e "screenshotWithAccessibilityLabels({ page })"
    ```
 
-4. **Network Interception:**
+6. **Network Interception:**
    Instead of scraping the DOM, intercept API responses directly.
    ```bash
    playwriter -e "state.responses = []; page.on('response', async res => { if (res.url().includes('/api/')) state.responses.push(await res.json()) })"
    ```
+
+---
+
+## Important Notes (v0.2.0)
+
+- **Absolute paths required for saved artifacts** — `page.screenshot({ path })`, `page.pdf({ path })`, etc. must use absolute paths. Playwright resolves them outside the sandboxed `fs`, so relative paths will fail silently or write to unexpected locations.
+- **Security** — All endpoints (including loopback `/cli/*`) now require a token. Under tunnel setups (ngrok, cloudflared), every request arrives from localhost — the previous bypass was effectively no-auth. Ensure `--token` is passed for remote subcommands (`session new`, `session list`, etc.).
 
 ---
 
