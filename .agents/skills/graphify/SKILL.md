@@ -5,6 +5,8 @@ description: Build a queryable knowledge graph from an entire codebase (code, do
 
 # graphify
 
+> v0.8.26 (2026-05-30)
+
 ## Core Concept
 
 Graphify turns a repository into a **knowledge graph** — a network of functions, classes, imports, and call relationships that the agent can query instead of reading raw files.
@@ -80,9 +82,15 @@ Outputs go to `graphify-out/`:
 | File | Purpose |
 |---|---|
 | `graph.html` | Interactive visualization — click nodes, filter, search, zoom/pan |
-| `GRAPH_REPORT.md` | Human-readable synthesis: god nodes, surprising connections, suggested queries |
+| `GRAPH_REPORT.md` | Human-readable synthesis: god nodes, surprising connections, suggested queries, **import cycles** |
 | `graph.json` | Full queryable graph data for programmatic use |
 | `sha256-cache/` | Content-addressed cache — unchanged files are never re-extracted |
+
+`GRAPH_REPORT.md` now includes an `## Import Cycles` section — file-level circular dependencies sorted by length (tightest coupling first). Also available programmatically:
+```python
+from graphify.analyze import find_import_cycles
+cycles = find_import_cycles(G)
+```
 
 ### 2. Query the graph
 
@@ -114,7 +122,22 @@ graphify hook install
 graphify merge-graphs service-a.json service-b.json
 ```
 
-### 5. Headless extraction (docs / media only)
+### 5. Custom LLM provider registry
+
+Register any OpenAI-compatible endpoint without touching source code:
+```bash
+graphify provider add nvidia \
+  --base-url https://integrate.api.nvidia.com/v1 \
+  --default-model minimaxai/minimax-m2.7 \
+  --env-key NVIDIA_API_KEY
+
+graphify provider list
+graphify provider show nvidia
+graphify provider remove nvidia
+```
+Providers stored in `~/.graphify/providers.json`. Works for NVIDIA NIM, vLLM, OpenRouter, Together AI, LiteLLM, Fireworks, etc. Custom providers are auto-detected after all built-ins — they never shadow a configured paid key.
+
+### 6. Headless extraction (docs / media only)
 
 ```bash
 # Extract docs with a specific backend
@@ -145,6 +168,8 @@ After `graphify claude install`, Claude automatically checks the graph before fi
 - **Keep `graphify-out/` in `.gitignore`** unless the team wants to share the built graph (large binary).
 - **The git hook (`graphify hook install`) is the lowest-friction way to keep the graph current** in active development.
 - **For monorepos:** build per-service graphs and merge them. Do not build one graph over the entire monorepo at once — the god-node signal gets diluted.
+- **Debugging extraction problems:** set `GRAPHIFY_DEBUG=1` to get full tracebacks from `_safe_extract` instead of terse one-liners.
+- **`.graphifyignore` anchored patterns** (`/inbox/`) now match only at the repo root, not deep in the tree — check your ignore file if patterns weren't working as expected.
 
 ---
 

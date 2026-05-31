@@ -4,6 +4,20 @@
 
 ---
 
+## 2026-05-31 14:00 — Claude Code — self-audit zewnętrznych narzędzi
+Tags: #warp-watch #self-audit #graphify #playwriter #check-impl-against-spec
+
+**Done:**
+- Pełny przegląd 19 skillów z skills-lock.json pod kątem zewnętrznych zależności
+- graphify v0.8.26 (2026-05-30): dodano import cycles, custom provider registry, GRAPHIFY_DEBUG, anchored .graphifyignore fix
+- check-impl-against-spec: upstream diverged (spec_context.md + review.json = Oz pipeline); nasza wersja lepsza dla naszego workflow — zostaje
+- council, resolve-merge-conflicts: SHA zgodny z upstream ✓
+
+**Open / next:**
+- Brak
+
+---
+
 ## 2026-05-31 13:00 — Claude Code — warp-watch sync
 Tags: #warp-watch #skills-lock #agent-workflow #sync
 

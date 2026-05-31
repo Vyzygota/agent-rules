@@ -4,4 +4,4 @@
 
 | Agent | Task | Status | Date | Detail |
 |---|---|---|---|---|
-| Claude Code | warp-watch 2026-05-31 sync | done | 2026-05-31 | AGENT_WORKFLOW.md#2026-05-31-warp-watch |
+| Claude Code | self-audit zewnętrznych narzędzi | done | 2026-05-31 | AGENT_WORKFLOW.md#2026-05-31-self-audit |
