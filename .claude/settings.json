@@ -9,6 +9,17 @@
             "command": "node -e \"const chunks=[]; process.stdin.on('data',d=>chunks.push(d)); process.stdin.on('end',()=>{ try{ const d=JSON.parse(Buffer.concat(chunks)); const fp=(d.tool_input||{}).file_path||''; if(fp.endsWith('skills-lock.json')){ const fs=require('fs'); const c=fs.readFileSync(fp,'utf8'); if(c.includes('graphify')){ require('child_process').execSync('graphify install --platform claude-code',{stdio:'inherit'}); } } }catch(e){} });\""
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "bash",
+            "command": "node -e \"const chunks=[]; process.stdin.on('data',d=>chunks.push(d)); process.stdin.on('end',()=>{ try{ const d=JSON.parse(Buffer.concat(chunks)); const cmd=(d.tool_input||{}).command||''; if(!cmd.includes('git push')) return; const {execSync}=require('child_process'); try{ const files=execSync('git log --name-only --pretty=format: @{u}..HEAD',{encoding:'utf8'}); if(files.trim() && !files.includes('.agents/COMMUNICATION.md') && !files.includes('.agents/AGENT_WORKFLOW.md')){ process.stdout.write(JSON.stringify({systemMessage:'[agent-workflow] OSTRZEZENIE: ani .agents/COMMUNICATION.md ani .agents/AGENT_WORKFLOW.md nie bylo w pushowanych commitach. Zasada: kazdy push z kodem wymaga aktualizacji przynajmniej jednego z tych plikow. COMMUNICATION.md — jesli zmienil sie owner lub status zadania. AGENT_WORKFLOW.md — jesli byla sesja robocza (zawsze). Konsekwencje pominiecia: (1) agent w nowej sesji powtarza wykonana prace bo nie widzi co zrobiono; (2) konflikty decyzji miedzy sesjami dzialajacymi na roznych stanach; (3) utrata ciaglosci — cel, postep i blokery niewidoczne. Dzialanie: zaktualizuj odpowiedni plik, dodaj do stage, dolacz do nowego commita przed kolejnym pushem.'})+'\n'); } }catch(e){} }catch(e){} });\"",
+            "statusMessage": "Sprawdzam COMMUNICATION.md..."
+          }
+        ]
       }
     ]
   }

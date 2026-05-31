@@ -24,7 +24,20 @@ Run `/self-audit` before any other work. It checks repo structure, rebuilds the 
 4. `CLAUDE.md` and `AGENTS.md` stay in sync on philosophy and checklist sections
 5. `warp-watch` runs every 2 weeks — check `warp-watch.md` for last sync date
 
+## Agent Layers (Communication System)
+
+Every project using `.agents/` maintains 3 files — see `/agent-workflow` skill for full spec:
+
+| File | Audience | Content |
+|---|---|---|
+| `WORKFLOW.md` | Human architect | Milestones, decisions, sprint goal — scannable in 60s |
+| `AGENT_WORKFLOW.md` | Agent | Session logs, tasks, technical context, keywords |
+| `COMMUNICATION.md` | Agent (session start) | Slim sync board: who owns what right now, links to detail |
+
+**Before `git push`:** update `COMMUNICATION.md` + `AGENT_WORKFLOW.md` and include both in commit.  
+Hook enforces this — push without either file triggers a warning.
+
 ## Skills Available
 
 All skills in `.agents/skills/` are auto-discovered via the `.agentskills/` junction.
-Key invocations: `/self-audit`, `/warp-watch`, `/init-project`, `/write-spec`, `/graphify`
+Key invocations: `/self-audit`, `/warp-watch`, `/init-project`, `/write-spec`, `/graphify`, `/agent-workflow`
