@@ -1,0 +1,133 @@
+name: Warp Watch
+
+on:
+  schedule:
+    - cron: '0 9 1,15 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  warp-watch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run warp-watch checks
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT=$(mktemp)
+          HAS_UPDATES=false
+          DATE=$(date -u +%Y-%m-%d)
+
+          echo "## Warp Watch Report — $DATE" >> "$REPORT"
+          echo "" >> "$REPORT"
+          echo "Auto-generated. Run the \`warp-watch\` skill to adopt relevant changes." >> "$REPORT"
+          echo "" >> "$REPORT"
+
+          # ── 1. New skills in common-skills ─────────────────────────────
+          UPSTREAM=$(curl -sf -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/warpdotdev/common-skills/contents/.agents/skills" \
+            | jq -r '.[].name' | sort || echo "")
+
+          TRACKED=$(jq -r '.skills | to_entries[]
+            | select(.value.source == "warpdotdev/common-skills") | .key' \
+            skills-lock.json | sort)
+
+          NEW=$(comm -23 <(echo "$UPSTREAM") <(echo "$TRACKED") | grep -v '^$' || true)
+
+          if [ -n "$NEW" ]; then
+            HAS_UPDATES=true
+            echo "### New skills in warpdotdev/common-skills" >> "$REPORT"
+            echo "" >> "$REPORT"
+            echo "$NEW" | while read -r s; do [ -n "$s" ] && echo "- \`$s\`" >> "$REPORT"; done
+            echo "" >> "$REPORT"
+            echo "Evaluate each: adopt vs skip per warp-watch protocol." >> "$REPORT"
+            echo "" >> "$REPORT"
+          fi
+
+          # ── 2. SHA divergence for tracked common-skills ────────────────
+          DIVERGED=""
+          while IFS=$'\t' read -r name path; do
+            [ -z "$name" ] && continue
+            UP_SHA=$(curl -sf -H "Authorization: Bearer $GH_TOKEN" \
+              "https://api.github.com/repos/warpdotdev/common-skills/contents/.agents/skills/$name/SKILL.md" \
+              | jq -r '.sha // empty' 2>/dev/null || true)
+            [ -z "$UP_SHA" ] && continue
+            LOCAL_SHA=$(git hash-object "$path" 2>/dev/null || echo "missing")
+            if [ "$UP_SHA" != "$LOCAL_SHA" ]; then
+              DIVERGED="$DIVERGED\n- **$name**: upstream \`${UP_SHA:0:7}\` ≠ local \`${LOCAL_SHA:0:7}\`"
+            fi
+          done < <(jq -r '.skills | to_entries[]
+            | select(.value.source == "warpdotdev/common-skills")
+            | [.key, .value.skillPath] | @tsv' skills-lock.json)
+
+          if [ -n "$DIVERGED" ]; then
+            HAS_UPDATES=true
+            echo "### Tracked skills diverged from upstream" >> "$REPORT"
+            echo "" >> "$REPORT"
+            printf "$DIVERGED\n" >> "$REPORT"
+            echo "" >> "$REPORT"
+            echo "Review: adopt upstream change or keep local version." >> "$REPORT"
+            echo "" >> "$REPORT"
+          fi
+
+          # ── 3. Relevant commits in warpdotdev/warp ─────────────────────
+          SINCE=$(date -u -d "14 days ago" +%Y-%m-%dT%H:%M:%SZ)
+          RELEVANT=$(curl -sf -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/warpdotdev/warp/commits?per_page=30&since=$SINCE" \
+            | jq -r '.[] | "- \(.commit.author.date[0:10]) \(.commit.message | split("\n")[0])"' \
+            | grep -iE "(agent|skill|spec|WARP\.md|\.agents)" || true)
+
+          if [ -n "$RELEVANT" ]; then
+            HAS_UPDATES=true
+            echo "### Relevant commits in warpdotdev/warp (last 14 days)" >> "$REPORT"
+            echo "" >> "$REPORT"
+            echo "$RELEVANT" >> "$REPORT"
+            echo "" >> "$REPORT"
+          fi
+
+          echo "---" >> "$REPORT"
+          echo "*Close after completing warp-watch and updating \`warp-watch.md\`.*" >> "$REPORT"
+
+          echo "has_updates=$HAS_UPDATES" >> "$GITHUB_OUTPUT"
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+          cp "$REPORT" warp-watch-report.md
+
+      - name: Create issue
+        if: steps.check.outputs.has_updates == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('warp-watch-report.md', 'utf8');
+            const date = '${{ steps.check.outputs.date }}';
+
+            try {
+              await github.rest.issues.createLabel({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                name: 'warp-watch',
+                color: '0075ca',
+                description: 'Automated warp-watch sync report'
+              });
+            } catch (_) { /* label already exists */ }
+
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `warp-watch: updates available — ${date}`,
+              body,
+              labels: ['warp-watch']
+            });
+
+            console.log(`Issue created: ${issue.html_url}`);
+
+      - name: No updates found
+        if: steps.check.outputs.has_updates == 'false'
+        run: echo "No relevant updates in warpdotdev/common-skills or warpdotdev/warp."
