@@ -1,6 +1,6 @@
 ---
 name: unity-mcp
-description: Set up, configure, and use CoplayDev/unity-mcp (FastMCP-based, 43 tools in 10 groups) in a Unity project. Use this skill when the user wants to connect Claude Code to Unity Editor via MCP, install unity-mcp for the first time, troubleshoot the connection, or use any unity-mcp tool (scene control, script editing, asset management, testing, etc.). Also triggers when the user says "połącz z Unity", "skonfiguruj unity-mcp", or reports Unity MCP server issues.
+description: OPTIONAL — only for Unity projects that explicitly use CoplayDev/unity-mcp. Do NOT trigger this skill automatically for general Unity questions, C# help, or game dev tasks unrelated to MCP setup. Use ONLY when the user explicitly asks to set up, configure, or troubleshoot the unity-mcp MCP server connection (e.g. "skonfiguruj unity-mcp", "set up unity MCP", "unity-mcp nie działa", "połącz Claude z Unity przez MCP"). Covers: installation (Unity package + Python server), Claude Code config (.mcp.json), session startup protocol, troubleshooting Windows-specific issues (case mismatch, deferred tools, WebSocket false alarms), and tool usage patterns (43 tools across 10 groups).
 ---
 
 # unity-mcp
