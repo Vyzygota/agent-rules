@@ -1,7 +1,7 @@
 # Global Agent Rules (Minimal Core)
 
 Source of truth: https://github.com/vyzygota/agent-rules
-Last synced with Warp: 2026-05-31
+Last synced with Warp: 2026-06-08
 
 ## 1. Philosophy: Spec-Driven Development
 - **Human role:** Decide what matters, define behavior, review tradeoffs.

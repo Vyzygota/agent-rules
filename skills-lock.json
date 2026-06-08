@@ -100,6 +100,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/unity-mcp/SKILL.md"
+    },
+    "validate-changes-match-specs": {
+      "source": "warpdotdev/common-skills",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/validate-changes-match-specs/SKILL.md"
     }
   }
 }
