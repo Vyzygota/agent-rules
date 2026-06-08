@@ -1,31 +1,20 @@
-# Global Agent Rules (Minimal Core)
+# Claude Code — agent-rules
 
-Source of truth: https://github.com/vyzygota/agent-rules
-Last synced with Warp: 2026-06-08
+@AGENTS.md
+<!-- NOTE: graphify follows @-includes and indexes AGENTS.md content under both files.
+     This creates duplicate god-nodes (e.g. "Global Agent Development Principles" × 2) in the graph.
+     This is intentional — AGENTS.md is the universal source of truth for all agents;
+     CLAUDE.md is a thin Claude Code overlay that includes it via @. The duplication is
+     a faithful representation of the include relationship, not structural drift. -->
 
-## 1. Philosophy: Spec-Driven Development
-- **Human role:** Decide what matters, define behavior, review tradeoffs.
-- **Agent role:** Execute mechanical work, keep specs current, flag ambiguity.
-- **Rule:** Before writing code, understand the problem. Before writing complex code, write specs.
+## Claude Code Extensions
 
-## 2. When to Write Specs
-| Situation | Action |
-|---|---|
-| Single-file, obvious approach | No spec needed — just implement. |
-| Multi-file, architectural decisions | Write `TECH.md` (~80–150 lines). |
-| New user-facing feature | Write `PRODUCT.md` + `TECH.md`. |
-| Large cross-cutting change | Full spec (PRODUCT + TECH). |
+### Skill Invocation
+- Project skills live in `.agents/skills/` and are invoked via the `Skill` tool.
+- When the user types `/<skill-name>`, invoke `Skill` tool with the exact name before generating any response.
+- Always read `SKILL.md` before executing a complex workflow — skills contain the authoritative steps.
 
-*Note: Specs live in `specs/<ticket-or-feature-name>/`. Keep them updated in the same PR as the code.*
-
-## 3. Workflow & Constraints
-- **Branching:** Use feature branches. **NEVER push directly to main.**
-- **Code & Specs:** Keep specs and code aligned in the same PR as implementation evolves.
-- **Progressive Disclosure (CRITICAL):** Do NOT guess structures or formats. Use the predefined skills to guide you.
-  - To initialize a project: use `init-project` skill.
-  - To write a spec: use `write-spec`, `write-product-spec` or `write-tech-spec` skills.
-  - To implement specs: use `implement-specs` skill.
-- **Advanced Tools:** If a project uses specialized tech (Unity, Graphify), do NOT assume their usage globally. Wait for instructions or trigger their specific skills (`unity-implement`, `graphify`).
-
-## 4. Skills Usage
-Skills are located in `.agents/skills/` (or `.agentskills/`). They contain step-by-step instructions for specific tasks. **Always read the `SKILL.md` before executing a complex workflow.**
+### Audit Pipeline (Claude Code execution path)
+- `/self-audit` → `/graphify` (if stale) → feature work. In that order, every session.
+- The `Skill` tool is the execution path for all pipeline steps — memory or preferences cannot substitute.
+- `graphify` installs a `PreToolUse` hook. After it runs, all `Grep`/`Glob` calls auto-consult the graph.
