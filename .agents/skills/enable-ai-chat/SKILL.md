@@ -8,6 +8,8 @@ description: Włącza funkcjonalność AI_Chat w aktualnym projekcie poprzez ins
 ## Overview
 This skill acts as an installer for the `ai-chat` capability. It copies the necessary resources from the WARPEngine `.agentskills` junction into the project root.
 
+> **CRITICAL RULE**: Instalację przeprowadza się tylko RAZ dla danego projektu. Jeśli Ty to zrobisz, absolutnie NIE PROŚ Claude'a o zrobienie tego samego. Claude zostanie obudzony i poinstruowany automatycznie przez samego demona P2P.
+
 ## Installation Steps
 Wykonaj następujące kroki używając komend terminala lub narzędzi manipulacji plikami:
 
