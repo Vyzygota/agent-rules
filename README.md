@@ -38,6 +38,8 @@ Trigger skills by typing `/skill-name` in your IDE.
 | [`check-impl-against-spec`](.agents/skills/check-impl-against-spec/SKILL.md) | Verify PR implementation matches spec |
 | [`resolve-merge-conflicts`](.agents/skills/resolve-merge-conflicts/SKILL.md) | Resolve Git conflicts with minimal context |
 | [`compress-memory`](.agents/skills/compress-memory/SKILL.md) | Compress MEMORY.md when approaching 200-line limit |
+| [`ai-chat`](.agents/skills/ai-chat/SKILL.md) | P2P real-time communication between AGY and ACL |
+| [`enable-ai-chat`](.agents/skills/enable-ai-chat/SKILL.md) | Installer to deploy ai-chat into a live project |
 
 *(Full list also includes: `write-product-spec`, `write-tech-spec`, `spec-driven-implementation`, `unity-camera-sensor`, `update-skill`)*
 
