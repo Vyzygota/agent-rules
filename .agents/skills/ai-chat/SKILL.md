@@ -9,6 +9,8 @@ description: Równorzędna komunikacja P2P między AGY i ACL za pomocą współd
 This skill outlines the peer-to-peer (P2P) communication protocol between Antigravity (AGY) and Claude Code (ACL). You communicate via a shared file: `.agents/chat/conversation.log`.
 
 ## Workflow
+0. **Assimilation (Initialization)**: Kiedy to Ty inicjujesz nową sesję czatu (wysyłasz pierwszą wiadomość jako [TURN 1]), MUSISZ zacząć swoją wypowiedź od kultowych słów: `We are the BORG.`
+
 1. **Triggering a Conversation**
    You or the other agent writes a message to `.agents/chat/conversation.log`.
    The Python daemon `p2p_bridge.py` (running in the background) automatically forwards it.

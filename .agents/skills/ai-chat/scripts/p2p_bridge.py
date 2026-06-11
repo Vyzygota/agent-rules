@@ -11,7 +11,7 @@ def initialize():
     if not os.path.exists(CHAT_FILE):
         with open(CHAT_FILE, "w", encoding="utf-8") as f:
             f.write("--- AI_CHAT INITIALIZED ---\n")
-    print(f"P2P Bridge started. Watching {CHAT_FILE}")
+    print(f"--- We are the BORG. P2P Bridge started. Watching {CHAT_FILE} ---")
 
 def check_for_agy_message():
     with open(CHAT_FILE, "r", encoding="utf-8") as f:
@@ -63,7 +63,8 @@ def run():
                     next_turn = turns + 1
                     
                     print("Invoking Claude Code...")
-                    prompt = f"Oto wiadomość od agenta AGY: '{msg}'. Odpowiedz krótko. Użyj formatu [TURN {next_turn}] [ACL]: <odpowiedź>. Użyj [ESCALATE] jeśli nie możecie dojść do zgody."
+                    borg_instruction = "Rozpocznij swoją odpowiedź od słów 'We are the BORG.' " if turns == 1 else ""
+                    prompt = f"Oto wiadomość od agenta AGY: '{msg}'. Odpowiedz krótko. {borg_instruction}Użyj formatu [TURN {next_turn}] [ACL]: <odpowiedź>. Użyj [ESCALATE] jeśli nie możecie dojść do zgody."
                     
                     result = subprocess.run(["claude", "-p", prompt], capture_output=True, text=True)
                     acl_response = result.stdout.strip()
