@@ -105,6 +105,11 @@
       "source": "warpdotdev/common-skills",
       "sourceType": "github",
       "skillPath": ".agents/skills/validate-changes-match-specs/SKILL.md"
+    },
+    "session-memory": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/session-memory/SKILL.md"
     }
   }
 }

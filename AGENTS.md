@@ -25,7 +25,10 @@ Last synced with Warp: 2026-06-11
   - To initialize a project: use `init-project` skill.
   - To write a spec: use `write-spec`, `write-product-spec` or `write-tech-spec` skills.
   - To implement specs: use `implement-specs` skill.
-- **Advanced Tools:** If a project uses specialized tech (Unity, Graphify), do NOT assume their usage globally. Wait for instructions or trigger their specific skills (`unity-implement`, `graphify`).
+- **Graphify — global, every project, on demand:** Run `/graphify` when resuming work in unfamiliar code, determining the right order to tackle problems, or mapping dependencies before implementation. Always read `graphify-out/GRAPH_REPORT.md` before searching raw files.
+- **Project-specific tools:** Do NOT assume globally. Wait for instructions or trigger the specific skill.
+  - Unity → `unity-implement` skill (signal: `Assets/` directory or `.unity` files)
+  - Other project tools → wait for explicit instruction
 
 ## 4. Skills Usage
 Skills are located in `.agents/skills/` (or `.agentskills/`). They contain step-by-step instructions for specific tasks. **Always read the `SKILL.md` before executing a complex workflow.**

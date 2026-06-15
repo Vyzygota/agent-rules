@@ -40,6 +40,7 @@ Trigger skills by typing `/skill-name` in your IDE.
 | [`compress-memory`](.agents/skills/compress-memory/SKILL.md) | Compress MEMORY.md when approaching 200-line limit |
 | [`ai-chat`](.agents/skills/ai-chat/SKILL.md) | P2P real-time communication between AGY and ACL |
 | [`enable-ai-chat`](.agents/skills/enable-ai-chat/SKILL.md) | Installer to deploy ai-chat into a live project |
+| [`session-memory`](.agents/skills/session-memory/SKILL.md) | Cross-session context: pickup, remember, checkpoint |
 
 *(Full list also includes: `write-product-spec`, `write-tech-spec`, `spec-driven-implementation`, `unity-camera-sensor`, `update-skill`)*
 
