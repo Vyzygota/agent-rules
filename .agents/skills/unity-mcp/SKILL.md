@@ -225,6 +225,14 @@ Configure active groups: **Window → MCP for Unity → Tool Groups**
 
 ---
 
+## Source
+
+- GitHub: https://github.com/CoplayDev/unity-mcp
+- Package: `com.coplaydev.unityMCP` (Unity Package Manager)
+- Python server: `mcpforunityserver` (PyPI)
+
+---
+
 ## Workflow: using unity-mcp tools
 
 ### Read before write
