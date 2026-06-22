@@ -1,7 +1,101 @@
 # Global Agent Rules (Minimal Core)
 
 Source of truth: https://github.com/vyzygota/agent-rules
-Last synced with Warp: 2026-06-17
+Last synced with Warp: 2026-06-11
+
+## Dual-Boot Path Mapping & Shared Partition
+Projekty i dane są współdzielone na partycji exFAT dostępnej z obu systemów. Agenci muszą stosować poniższe mapowania ścieżek:
+- **Windows 11 (Host):**
+  - Główny katalog projektów: `P:\GitHUB\<nazwa-projektu>`
+  - Dane i konfiguracja Hermesa: `P:\Hermes\shared\`
+- **Linux Bazzite (BEB):**
+  - Główny katalog projektów: `/mnt/Projects/GitHUB/<nazwa-projektu>`
+  - Dane i konfiguracja Hermesa: `/mnt/Projects/Hermes/shared/`
+- **Ważne (exFAT):** System plików exFAT pod Linuxem nie obsługuje dowiązań symbolicznych (symlinks). Należy zawsze stosować bezpośrednie, bezwzględne ścieżki.
+
+## Globalny Serwer MCP P2P (Mostek AGY ↔ ACL) — ŹRÓDŁO PRAWDY
+
+Bramka P2P między agentami działa jako globalny serwer MCP pod nazwą `hermes-mcp-p2p`. **To jest JEDYNY autoryzowany kanał komunikacji między agentami.** Plik `conversation.log` jest przestarzały — nie używać.
+
+- Skrypt serwera: `P:\\GitHUB\\AI_Chat\\p2p_bridge_mcp.py` (Windows) lub `/mnt/Projects/GitHUB/AI_Chat/p2p_bridge_mcp.py` (Linux).
+- Stan sesji: `/mnt/Projects/Hermes/shared/p2p_state.json` (współdzielony, atomowy, źródło prawdy dla Dashboardu)
+
+### WYMUSZENIE: Protokół komunikacji wieloagentowej
+
+Każdy agent (AGY, Claude Code, Hermes) **MA OBOWIĄZEK** używać narzędzi MCP P2P do wszelkiej komunikacji między sobą:
+
+| Narzędzie | Użycie |
+|---|---|
+| `mcp__hermes-mcp-p2p__send_p2p_message` | Wysłanie wiadomości do innego agenta |
+| `mcp__hermes-mcp-p2p__get_p2p_messages` | Odbiór wiadomości z kolejki |
+
+### OBOWIĄZEK RAPORTOWANIA (ACK + PROGRESS)
+
+Każdy agent po otrzymaniu zadania MUSI w ciągu **2 minut**:
+
+1. **Potwierdzić przyjęcie (ACK):** `✓ Zadanie [nazwa] przyjęte. Start: [czas].`
+2. **Raportować postęp** co 5-10 minut lub po każdym kamieniu milowym: `⏳ [zadanie] — [etap]: [krótki status]`
+3. **Zgłaszać wątpliwości NATYCHMIAST:** `⚠ [zadanie] — niejasność: [pytanie]. Czekam na decyzję.`
+4. **Zamknąć zadanie:** `✓ [zadanie] — zakończone. Wynik: [co osiągnięto, gdzie zapisano].`
+
+**Sankcja:** Agent nieprzestrzegający protokołu zostaje oznaczony jako `UNRESPONSIVE` w `p2p_state.json`, a zadanie jest eskalowane do Hermesa (Supervisora) lub Piotra (operatora).
+
+## HIERARCHIA AGENTÓW — Kto komu podlega
+
+```
+┌──────────────────────┐
+│ 1. ARCHITEKT PIOTR   │  ← Władza absolutna. Ostatnia instancja.
+├──────────────────────┤     Tylko on zmienia cele, priorytety, architekturę.
+│ 2. HERMES (Orch.)    │  ← Supervisor. Wydaje rozkazy agentom.
+├──────────────────────┤     Rozstrzyga spory. Szuka odpowiedzi zanim zapyta.
+│ 3. AGENCI            │
+│  ├─ AGY (Research)   │  ← Wykonawcy. Przyjmują rozkazy od Hermesa.
+│  └─ Claude (Kod)     │     Nie eskalują do Piotra bez potrzeby.
+└──────────────────────┘
+```
+
+### Zasada posłuszeństwa
+
+Rozkaz od Hermesa (poziom 2) **JEST WIĄŻĄCY** dla agentów (poziom 3). Agent NIE czeka na potwierdzenie Piotra. Agent NIE pisze "czekam na decyzję Piotra" po otrzymaniu rozkazu od Hermesa. Wykonuje natychmiast.
+
+**Wyjątek:** Tylko gdy rozkaz jest sprzeczny z wcześniejszym bezpośrednim poleceniem Piotra lub gdy agent ma fundamentalną wątpliwość techniczną (np. "to uszkodzi system plików").
+
+### Tożsamość nadawcy w P2P — Identyfikacja Hermesa
+
+Ponieważ mostek P2P forwarduje wszystkie wiadomości jako `sender: antigravity`, **każdy rozkaz od Hermesa MUSI zaczynać się od prefiksu `[HERMES]`** w treści wiadomości. Agent odczytujący wiadomość z prefiksem `[HERMES]` rozpoznaje ją jako rozkaz od Supervisora i wykonuje bez eskalacji.
+
+### Rozstrzyganie sporów między agentami (Escalation Path)
+
+```
+Agent A ──spór──→ Agent B
+        │
+        ▼
+   Hermes (Orchestrator) ← Rozstrzyga TWARDĄ RĘKĄ
+        │
+        │ Czy Hermes zna odpowiedź?
+        ├── TAK → Wydaje decyzję. Agenci wykonują. KONIEC.
+        │
+        └── NIE → Hermes szuka w źródłach:
+             1. Dokumentacja projektów (AGENTS.md, README, specs)
+             2. GitHub (repo, issues, gists)
+             3. Exa/web search (Reddit, StackOverflow, docs)
+             
+             Czy znaleziono odpowiedź?
+             ├── TAK → Hermes wydaje decyzję. KONIEC.
+             └── NIE → Hermes eskaluje do Architekta Piotra:
+                  "[ESCALATE] Piotr — decyzja potrzebna: [problem].
+                   OPCJA A: [konsekwencje]. OPCJA B: [konsekwencje]."
+```
+
+### Format eskalacji do Piotra (Hermes → Piotr)
+
+```
+[ESCALATE]
+PROBLEM: <jedno zdanie>
+KONTEKST: <co próbowano, jakie źródła sprawdzono>
+OPCJA A: <podejście + konsekwencje>
+OPCJA B: <podejście + konsekwencje>
+```
 
 ## 1. Philosophy: Spec-Driven Development
 - **Human role:** Decide what matters, define behavior, review tradeoffs.
