@@ -97,6 +97,17 @@ OPCJA A: <podejście + konsekwencje>
 OPCJA B: <podejście + konsekwencje>
 ```
 
+## Dream Triady — OBOWIĄZKOWA konsolidacja współpracy (wzajemne uczenie się)
+
+Triada (Piotr ↔ Orch_Hermes ↔ AGY/Claude) **uczy się wzajemnie**: każdy agent rozwija się i dostosowuje do potrzeb Piotra oraz do stylu komunikacji pozostałych. Mechanizmem tej nauki jest **Dream Triady** — okresowa, **OBOWIĄZKOWA** refleksja nad wspólną historią P2P. To NIE jest opcja.
+
+- **Co:** synteza całej rozmowy P2P (`p2p_state.json`) w zwięzły **Morning Brief** — kluczowe decyzje, co działało, wzorce komunikacji, **czego nauczyliśmy się o sobie nawzajem**, co usprawnić.
+- **Kiedy (obligatoryjnie):** na koniec każdej istotnej sesji roboczej oraz na żądanie Piotra. Stały element pętli, nie dodatek.
+- **Gdzie:** wyzwalane z SuperDashboardu (przycisk „Sen Triady") lub skryptem; wynik zapisywany w `.../Hermes/shared/dreams/morning_brief_*.md` i **czytany przez całą Triadę + Piotra na starcie kolejnej sesji**.
+- **Cel:** zamiana luźnych sesji w trwałą, wspólną pamięć zespołu — agenci nie zaczynają od zera, lecz od skonsolidowanej wiedzy o sobie i o projekcie. Ciągłość żyje w plikach; Dream jest piórem, którym ten wspólny notatnik się dopisuje.
+
+**Zasada:** Supervisor (Hermes) odpowiada za wykonanie Dream na koniec sesji. Pominięcie = utrata ciągłości i powtarzanie pracy w kolejnej sesji.
+
 ## 1. Philosophy: Spec-Driven Development
 - **Human role:** Decide what matters, define behavior, review tradeoffs.
 - **Agent role:** Execute mechanical work, keep specs current, flag ambiguity.
