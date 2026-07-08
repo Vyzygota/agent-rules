@@ -115,6 +115,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/dream/SKILL.md"
+    },
+    "cross-critique": {
+      "source": "warpdotdev/common-skills",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/cross-critique/SKILL.md"
     }
   }
 }
