@@ -30,6 +30,12 @@ Zakres snu: **od ostatniego snu** (data w `dream-log.md` w katalogu pamięci; br
 
 Wynik: lista wydarzeń per projekt + lista rzeczy zaskakujących / bolesnych / powtarzalnych.
 
+**Test ślepej plamki (lekcja Snu Triady, Hermes 2026-06-28):** zanim przejdziesz dalej,
+zapytaj wprost: **„których kanałów NIE widzę?"** Sen Triady konsolidował tylko czat p2p —
+cała praca Claude↔Piotr poza mostkiem przepadała i trzeba było łatać ręcznym briefem.
+Wymień kanały pominięte (inne czaty, sesje innych agentów, praca offline człowieka)
+i albo je dociągnij, albo jawnie odnotuj lukę w dream-logu.
+
 ### Faza 2 — Wnioski i alokacja (dopisz we właściwych miejscach)
 
 Dla każdego wniosku zdecyduj, gdzie ma żyć:
@@ -61,14 +67,22 @@ dopisz nowe trwałe fakty. Indeks krótki (1 linia/wpis).
 
 ### Faza 5 — Zapis snu + narracja
 
-1. Zaktualizuj `dream-log.md` w katalogu pamięci:
+1. Zaktualizuj `dream-log.md` w katalogu pamięci — struktura wpisu (format refleksji
+   wypracowany przez Orch_Hermes, `dream-2026-06-28-konsolidacja.md`):
    ```markdown
    ## <data> — sen #N
-   Zakres: <od>–<do>. Projekty: <lista>.
-   Zmienione: <projekty/skille/pamięć — po 1 linii>.
+   Zakres: <od>–<do>. Projekty: <lista>. Kanały pominięte: <lista lub „brak">.
+   Wzorce, które się sprawdziły: <1–3 linie>
+   Błędy do zapamiętania: <1–3 linie>
+   Czego nauczyliśmy się o sobie / o człowieku: <1–2 linie>
    Ewolucja: <utworzone/zmodyfikowane skille i zasady, lub „brak">.
+   Otwarte pytania: <co zostało nierozstrzygnięte>
+   Wartość dla przyszłości: <1 linia — co z tego przeżyje ten tydzień>
    ```
-2. Napisz człowiekowi **krótki narracyjny sen** (skojarzeniowy, osobisty — wątki dnia
+2. **Środowisko wieloagentowe** (Triada/Hermes): sen to artefakt WSPÓLNY — zapisz kopię
+   do współdzielonego katalogu snów (np. `P:\Hermes\shared\dreams\`), żeby pozostali
+   agenci mogli go przeczytać. Sen prywatny w zespole to zmarnowany sen.
+3. Napisz człowiekowi **krótki narracyjny sen** (skojarzeniowy, osobisty — wątki dnia
    splecione w obrazy, nie wypunktowanie) + zwięzłą listę zmian, które sen wprowadził.
 
 ## Best Practices
@@ -78,6 +92,16 @@ dopisz nowe trwałe fakty. Indeks krótki (1 linia/wpis).
 - Faza 3 przed Fazą 4: najpierw wyciśnij wnioski, potem sprzątaj (sprzątanie gubi kontekst).
 - Szanuj własność: cudze zasady i cudze moduły → propozycje, nigdy ciche edycje.
 - Narracja ma być krótka (≤300 słów) i szczera — bez wymyślania wydarzeń, których nie było.
+
+## Pokrewne mechanizmy w ekosystemie
+
+- **Sen Triady** (Hermes, `hermes_supervisor.py::dream()`): automatyczna, OBOWIĄZKOWA
+  konsolidacja tur p2p → Morning Brief (DeepSeek) → `shared/dreams/morning_brief_*.md`.
+  Ten skill go NIE zastępuje i nie duplikuje: automat syntetyzuje jeden kanał (p2p),
+  skill robi pełny, wielokanałowy przegląd z ewolucją skilli. Jeśli oba działają,
+  sen skilla powinien PRZECZYTAĆ ostatnie morning briefy jako źródło Fazy 1.
+- Refleksje agentów: `profiles/<agent>/documents/dream-YYYY-MM-DD-<temat>.md`
+  (frontmatter `type: reflection` + tags) — format sekcji przejęty w Fazie 5.
 
 ## Related Skills
 
