@@ -110,6 +110,11 @@
       "source": "vyzygota/agent-rules",
       "sourceType": "github",
       "skillPath": ".agents/skills/session-memory/SKILL.md"
+    },
+    "dream": {
+      "source": "vyzygota/agent-rules",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/dream/SKILL.md"
     }
   }
 }
