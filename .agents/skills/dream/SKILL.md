@@ -102,6 +102,12 @@ dopisz nowe trwałe fakty. Indeks krótki (1 linia/wpis).
   sen skilla powinien PRZECZYTAĆ ostatnie morning briefy jako źródło Fazy 1.
 - Refleksje agentów: `profiles/<agent>/documents/dream-YYYY-MM-DD-<temat>.md`
   (frontmatter `type: reflection` + tags) — format sekcji przejęty w Fazie 5.
+- **NousResearch/hermes-agent-self-evolution** (upstream; DSPy + GEPA): mechaniczna,
+  mierzalna wersja Fazy 3 — ewoluuje SKILL.md/prompty/opisy narzędzi na PRAWDZIWEJ
+  historii sesji (sessiondb: Claude Code/Copilot/Hermes), z bramkami testów i wynikiem
+  jako PR. Sam sen w upstream NIE istnieje (śnienie = wynalazek Triady). Kierunek na
+  przyszłość: wnioski Fazy 3 („który skill zawodzi") mogą wskazywać cele dla GEPA,
+  a dream-logi zasilać jego zbiory ewaluacyjne.
 
 ## Related Skills
 
