@@ -1,7 +1,7 @@
 # Global Agent Rules (Minimal Core)
 
 Source of truth: https://github.com/vyzygota/agent-rules
-Last synced with Warp: 2026-07-08
+Last synced with Warp: 2026-07-09
 
 ## Dual-Boot Path Mapping & Shared Partition
 Projekty i dane są współdzielone na partycji exFAT dostępnej z obu systemów. Agenci muszą stosować poniższe mapowania ścieżek:

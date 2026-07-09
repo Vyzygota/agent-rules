@@ -5,7 +5,9 @@ description: OPTIONAL — only for Unity projects that explicitly use CoplayDev/
 
 # unity-mcp
 
-Connect Claude Code to Unity Editor via [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp) — a FastMCP-based bridge with 43 tools across 10 groups.
+Connect Claude Code to Unity Editor via [CoplayDev/unity-mcp](https://github.com/CoplayDev/unity-mcp) — a FastMCP-based bridge. v9.7.x exposes 43 tools across 10 groups; **v10.0.0** (2026-06-30) expands the catalog to 47 MCP entry points in groups (core, animation, asset_gen, docs, profiling, …), with non-core groups **disabled by default** and a new `manage_tools` workflow to activate them.
+
+> **Version status (2026-07-09):** live projects (GalaxyTrader, DarkEdenDigital) still run **v9.7.1** — the v10 upgrade requires opening each project in Unity (package update + client reconfigure), so do it per-project, not globally. Migration notes: https://coplaydev.github.io/unity-mcp/migrations/v10
 
 ## When to use this skill
 
@@ -36,7 +38,7 @@ Wait for Unity to resolve and compile. Watch the bottom status bar — it must s
 **Common failure points:**
 - Git is not installed or not in PATH → install Git for Windows, restart Unity
 - Firewall blocks GitHub HTTPS → use a VPN or corporate proxy bypass
-- Unity shows "package not found" → try pinning a version: `...#v9.7.1` instead of `#main`
+- Unity shows "package not found" → try pinning a release: `...#v10.0.0` (or `openupm add com.coplaydev.unity-mcp`)
 
 ### Step 2: Auto-configure Claude Code
 
@@ -137,7 +139,7 @@ After configuration, verify the connection:
 
 1. Restart Claude Code (close and reopen the project)
 2. Check that `UnityMCP` appears in the active MCP servers list
-3. In Claude Code, ask: "List available unity-mcp tools" — you should see 43 tools
+3. In Claude Code, ask: "List available unity-mcp tools" — expect 43 tools on v9.7.x; on v10 the count depends on activated groups (47 total, non-core groups off by default — activate via `manage_tools action=activate group=<name>`)
 
 **In Unity Editor:**
 
@@ -149,7 +151,7 @@ After configuration, verify the connection:
 |---------|-------|-----|
 | `uvx: command not found` | uv not in PATH | Restart terminal, or use full path to uvx |
 | `Connection refused` (HTTP mode) | Server not running | Start the server manually first |
-| Tools show as `undefined` | Version mismatch | Pin matching versions: `#v9.7.1` + `mcpforunityserver==9.7.1` |
+| Tools show as `undefined` | Version mismatch | Pin matching versions (Unity package tag = server version), e.g. `#v10.0.0` + `mcpforunityserver==10.0.0` — or `#v9.7.1` + `==9.7.1` on legacy projects |
 | Unity package compiles but tools missing | Auto-configure failed | Add `.mcp.json` block manually (see Part C HTTP section) |
 | `spawn uvx ENOENT` on Windows | uvx not found by Node/Claude Code process | Add uv to System PATH, not just user PATH; restart machine |
 | Python server crashes on start | Python < 3.10 | `py -3.10 -m ...` or install Python 3.10+ |
@@ -204,7 +206,9 @@ This verifies end-to-end communication. If it returns a scene name, you're ready
 
 ## Tool Groups
 
-Unity-mcp has 43 tools in 10 groups. Activate only what you need to reduce prompt size and cost.
+v9.7.x has 43 tools in 10 groups; v10.0.0 has 47 entry points with non-core groups disabled by default. Activate only what you need to reduce prompt size and cost.
+
+**v10:** groups are controlled from the MCP side via `manage_tools` (`action=list`, `action=activate group=asset_gen`, …). The new `asset_gen` group (AI 3D/2D asset generation, BYO API key stored in Unity — never in client config files) is off by default; optional deps (glTFast for GLB import) install only when needed.
 
 | Group | Key Tools | Enable when |
 |-------|-----------|-------------|

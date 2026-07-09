@@ -5,7 +5,7 @@ description: Use Playwriter to directly control the user's actual Chrome browser
 
 # playwriter
 
-> v0.2.0 (2026-05-19)
+> v0.4.0 (2026-06-25)
 
 ## Core Concept
 
@@ -83,12 +83,28 @@ Click the extension icon on a tab to connect it (it will turn green).
    playwriter -e "state.responses = []; page.on('response', async res => { if (res.url().includes('/api/')) state.responses.push(await res.json()) })"
    ```
 
+7. **Page diagnostics via `getLatestLogs()` (v0.3.0+) — preferred over manual console listeners:**
+   Returns buffered console logs and page errors (persisted across navigations, so hydration/redirect/startup errors are not lost). With `sinceLastCall: true`, later calls return only new entries.
+   ```bash
+   playwriter -s 1 -e 'console.log(await getLatestLogs({ page, sinceLastCall: true }))'
+   ```
+
+8. **Headless mode (v0.4.0+) — no extension or visible browser needed:**
+   ```bash
+   playwriter browser install                 # one-time: download Chrome for Testing
+   playwriter session new --browser headless  # launch headless Chrome
+   ```
+   Multiple headless sessions share one Chrome process with isolated contexts. Useful for CI or servers; for normal use, prefer the extension (real session, no bot detection).
+
 ---
 
-## Important Notes (v0.2.0)
+## Important Notes (v0.4.0)
 
 - **Absolute paths required for saved artifacts** — `page.screenshot({ path })`, `page.pdf({ path })`, etc. must use absolute paths. Playwright resolves them outside the sandboxed `fs`, so relative paths will fail silently or write to unexpected locations.
-- **Security** — All endpoints (including loopback `/cli/*`) now require a token. Under tunnel setups (ngrok, cloudflared), every request arrives from localhost — the previous bypass was effectively no-auth. Ensure `--token` is passed for remote subcommands (`session new`, `session list`, etc.).
+- **Security** (since v0.2.0) — All endpoints (including loopback `/cli/*`) require a token. Under tunnel setups (ngrok, cloudflared), every request arrives from localhost — the previous bypass was effectively no-auth. Ensure `--token` is passed for remote subcommands (`session new`, `session list`, etc.).
+- **Auto-page creation is ON by default** (since v0.3.1) — MCP/CLI sessions create a blank Playwriter-enabled tab when no targets are available; agents can start immediately. Set `PLAYWRITER_AUTO_ENABLE=false` to disable.
+- **CDP logs rotate automatically** (since v0.3.0) — `~/.playwriter/cdp.jsonl` is capped at 10,000 entries (tune with `PLAYWRITER_CDP_LOG_MAX_ENTRIES`).
+- **Cloud browser sessions** (v0.4.0, paid) — `playwriter session new --browser cloud` spins up stealth Chromium VMs with residential proxies (`--proxy us`); auth via `playwriter cloud login` or `PLAYWRITER_API_KEY` for CI. Not needed for local workflows.
 
 ---
 
