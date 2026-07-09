@@ -5,11 +5,12 @@ description: "Use for any question about a codebase, its architecture, file rela
 
 # /graphify
 
-> Vendored from upstream `graphify install --platform claude` (tool v0.9.9, synced 2026-07-08
-> during warp-watch — previous copy was v0.8.26, 39 days stale, and used an obsolete
-> multi-step CLI that no longer matched the installed tool). **Re-sync at every warp-watch**
-> by diffing this file against a fresh `graphify install --platform claude` output — don't
-> hand-edit drift, it silently breaks the workflow steps below.
+> Vendored from upstream `graphify install --platform claude` (tool v0.9.11, synced 2026-07-09
+> during warp-watch — 0.9.9→0.9.11 fixed the interpreter-detection command: `uv tool run
+> --from graphifyy python` replaces the broken `uv tool run graphifyy python`).
+> **Re-sync at every warp-watch** by diffing this file against a fresh
+> `graphify install --platform claude` output — don't hand-edit drift, it silently breaks
+> the workflow steps below.
 
 Turn any folder of files into a navigable knowledge graph with community detection, an honest audit trail, and three outputs: interactive HTML, GraphRAG-ready JSON, and a plain-language GRAPH_REPORT.md.
 
@@ -76,7 +77,7 @@ PYTHON=""
 GRAPHIFY_BIN=$(which graphify 2>/dev/null)
 # 1. uv tool installs — most reliable on modern Mac/Linux
 if [ -z "$PYTHON" ] && command -v uv >/dev/null 2>&1; then
-    _UV_PY=$(uv tool run graphifyy python -c "import sys; print(sys.executable)" 2>/dev/null)
+    _UV_PY=$(uv tool run --from graphifyy python -c "import sys; print(sys.executable)" 2>/dev/null)
     if [ -n "$_UV_PY" ]; then PYTHON="$_UV_PY"; fi
 fi
 # 2. Read shebang from graphify binary (pipx and direct pip installs)
@@ -92,7 +93,7 @@ if [ -z "$PYTHON" ]; then PYTHON="python3"; fi
 if ! "$PYTHON" -c "import graphify" 2>/dev/null; then
     if command -v uv >/dev/null 2>&1; then
         uv tool install --upgrade graphifyy -q 2>&1 | tail -3
-        _UV_PY=$(uv tool run graphifyy python -c "import sys; print(sys.executable)" 2>/dev/null)
+        _UV_PY=$(uv tool run --from graphifyy python -c "import sys; print(sys.executable)" 2>/dev/null)
         if [ -n "$_UV_PY" ]; then PYTHON="$_UV_PY"; fi
     else
         "$PYTHON" -m pip install graphifyy -q 2>/dev/null \

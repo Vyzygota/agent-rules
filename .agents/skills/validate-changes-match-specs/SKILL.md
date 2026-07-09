@@ -48,7 +48,7 @@ Read every relevant spec before assessing implementation. Treat specs, PR descri
 - **Product behavior:** user-visible behavior, UX flows, success criteria, constraints, and edge cases.
 - **Technical implementation:** files, components, APIs, data models, migrations, feature flags, architecture, dependencies, and rollout mechanics.
 - **Security and privacy:** authentication, authorization, permission boundaries, secrets, data handling, logging, retention, abuse cases, and compliance claims.
-- **Validation:** required tests, manual checks, fixtures, CI commands, migration checks, and acceptance criteria.
+- **Validation:** required tests, manual checks, screenshots, fixtures, CI commands, migration checks, and acceptance criteria.
 - **Non-goals:** scope exclusions and intentionally deferred work.
 
 Then inspect the implementation:
@@ -64,16 +64,26 @@ Do not rely only on file names or summaries. Read enough code and tests to decid
 
 ## PR review comment consistency
 
-If the branch or PR has already been through external PR review, check the review comments before finalizing the mismatch report.
+If the branch or PR has already been through external PR review, check the review comments before finalizing the mismatch report. Fetch PR review comments when needed via the GitHub CLI or API (`gh pr view --comments`, `gh api repos/<owner>/<repo>/pulls/<n>/comments`).
 
 For each review thread with a response from the current user or agent:
 
 - Identify the original reviewer request.
 - Identify the latest acknowledged resolution from the current user or agent, especially replies that say the comment was fixed in a particular way.
 - Compare the final implementation against that acknowledged resolution.
-- Skip threads where the latest reviewer follow-up supersedes the prior acknowledgment, unless there is a newer reply that responds to it.
+- Skip threads where the latest reviewer follow-up supersedes the prior acknowledgment, unless there is a newer current-user or agent reply that responds to it.
 
 Treat a material difference between the implementation and the last acknowledged resolution as a `review-comment consistency` mismatch. Include the review comment URL, the acknowledged resolution text, the relevant implementation path and line when available, and why the implementation does or does not match what was promised.
+
+For review-comment consistency mismatches, the resolution choices should be:
+
+- Change the implementation to match the last acknowledged resolution on the comment.
+- Append a follow-up comment explaining why the implementation is being left as-is.
+- Explain this inconsistency before deciding.
+- Acknowledge without changes.
+- `Other...`
+
+If the user chooses to append a follow-up comment, draft the comment for approval before posting it. Do not post review comments without explicit approval. Prefix agent-authored follow-up comments with `[Agent]`.
 
 ## Security spec validation
 
@@ -101,6 +111,10 @@ If you discover a plausible security gap that is not covered by the security spe
 
 Do not make speculative security claims. If evidence is incomplete, label the item as a validation gap and describe exactly what would need to be checked.
 
+## Product behavior validation (visual sources)
+
+If the specs reference design mocks, screenshots, or visual acceptance criteria, validate the implementation against those visual sources using the tools available in the session (image reading, browser screenshots via playwriter, a design-tool MCP such as Figma when connected). Treat material visual differences as product mismatches: missing UI states, incorrect copy, layout differences that affect usability, wrong component hierarchy, missing affordances, or behavior that contradicts the mock. Do not over-report tiny pixel differences unless the spec calls for exact visual fidelity or the difference affects the user experience. If a visual source cannot be checked with available tools, record that as a validation gap instead of assuming it passes.
+
 ## Validation criteria
 
 Treat a mismatch as material when any of these are true:
@@ -110,7 +124,7 @@ Treat a mismatch as material when any of these are true:
 - The implementation uses a technical approach that contradicts the tech spec in a way that matters for correctness, maintainability, rollout, or review.
 - The implementation adds meaningful behavior or scope not described by the specs.
 - Security, privacy, permission, or logging behavior differs from the security or product spec.
-- A discovered security gap is not covered by an existing security spec.
+- A discovered security gap is not covered by an existing security spec and should be considered as a spec amendment.
 - The implementation does not match the last acknowledged resolution on a PR review comment.
 - Required migrations, rollout steps, feature flags, telemetry, validation, or cleanup are missing.
 - Tests or validation promised by the spec are absent or materially weaker than described.
@@ -132,17 +146,19 @@ Before asking resolution questions, present a concise list of mismatches. For ea
 - Why the difference matters.
 - Recommended resolution: update implementation, update spec, or ask for clarification.
 
-If security-relevant mismatches exist, call them out separately.
+If security-relevant mismatches exist, call them out separately and avoid downplaying them as product or technical nits.
 
 If no mismatches are found, say that the implementation appears to match the discovered specs, summarize the specs checked, and list any validation that was or was not run.
 
 ## Initial resolution mode
 
-When mismatches exist, ask how the user wants to resolve them:
+When mismatches exist, the first question must ask how the user wants to resolve them:
 
 - `Resolve one-by-one`
 - `Collect all decisions, then apply in a batch`
 - `Other...`
+
+Every resolution question in this skill must include an `Other...` option for custom instructions.
 
 ### One-by-one mode
 
@@ -156,7 +172,9 @@ For each mismatch:
 
 ### Batch mode
 
-For each mismatch, collect the user's decision interactively without editing yet. After all decisions are collected, apply all selected changes together, then validate.
+For each mismatch, collect the user's decision interactively without editing yet. Batch mode only batches edits; it does not batch the information-gathering phase — the user must be able to ask for more context, request an explanation, or give custom instructions for any individual mismatch before deciding.
+
+After all mismatch decisions are collected, apply all selected code and spec changes together, then validate.
 
 ## Per-mismatch resolution options
 
@@ -168,6 +186,12 @@ Always offer options with these meanings:
 - Acknowledge without changes.
 - `Other...`
 
+When the user selects explanation, provide concise context about why the mismatch exists, what would change under each resolution path, and any risk or review implications. Then ask about the same mismatch again.
+
+When the user selects acknowledge without changes, give them the option to provide a rationale. Preserve that rationale in the final summary.
+
+When the user chooses to update implementation, modify code, tests, docs, migrations, or validation artifacts as needed to satisfy the spec. When the user chooses to update the spec, update only the spec text needed to describe the implementation accurately.
+
 ## Resolution rules
 
 - Preserve unrelated local changes.
@@ -175,6 +199,10 @@ Always offer options with these meanings:
 - Prefer updating specs when the implementation intentionally diverged and the shipped behavior is correct.
 - Prefer updating implementation when the spec describes required user behavior, security behavior, compatibility, migration, or validation guarantees that the code does not satisfy.
 - If a mismatch affects security or privacy, be explicit about the risk before asking for a resolution.
+- If two mismatch decisions conflict, stop and ask for clarification before editing.
+- Keep product specs user-focused and implementation-light.
+- Keep tech specs grounded in actual architecture and code paths.
+- Keep security specs explicit about threats, boundaries, and mitigations.
 
 ## Validation after changes
 
@@ -182,13 +210,27 @@ After applying selected resolutions:
 
 1. Review `git diff` to confirm the changes match the user's decisions.
 2. Run relevant validation based on changed files and repository conventions.
-3. Re-check the resolved mismatches against the final diff.
+3. If the repository has documented test, lint, typecheck, or presubmit commands, prefer those.
+4. If validation is too expensive or cannot run, explain why and list what remains unverified.
+5. Re-check the resolved mismatches against the final diff.
 
 ## Commit and push
 
-After validation, ask whether the user wants to commit and optionally push the changes.
+After validation, ask whether the user wants to commit and optionally push the changes to `origin`, with options like:
 
-If the user chooses to commit, stage only the intended files and commit non-interactively.
+- `Commit only`
+- `Commit and push to origin`
+- `Do not commit`
+- `Other...`
+
+If the user chooses to commit:
+
+1. Review `git status` and the final diff.
+2. Ask for or propose a concise commit message if one is not already clear.
+3. Stage only the intended files.
+4. Commit non-interactively, following the repository's commit conventions (including any agent co-author trailer the environment prescribes).
+
+If the user chooses to push, push the current branch to `origin` after the commit succeeds. If commit or push fails, report the failure and do not retry destructively.
 
 ## Final response
 
@@ -200,6 +242,7 @@ End with a concise summary:
 - Files changed.
 - Validation run and result.
 - Remaining unresolved or intentionally acknowledged mismatches.
+- Commit and push status, if applicable.
 
 ## Related Skills
 
